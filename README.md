@@ -4,65 +4,55 @@
 [![npm package][npm-badge]][npm]
 [![Coveralls][coveralls-badge]][coveralls]
 
-**WIP**
+> A simple yet powerful canvas-drawing component for React ([Demo](https://mbeierl.github.io/react-canvas-draw/)).
 
-I decided against a controlled component for better performance.
-The `/demo` folder contains examples, e.g. how customize everything or implement loading & saving.
-
-## Ideas / TODOs
-
-* testing. Especially save, load, clear and drawing
-
-* canvas customization to only display drawings, by passing along the linesArray and settings a props "editDisabled" to true. Combined with the draw-load animation this might be very interesting.
-
-* modular brushes to build up a brush library. all brushes should implement their own draw function.
-
-# Actual README begins here [WIP]
-
-Draw anything! A simple but powerful canvas component for React (Demo).
-
-*A small gif to show it off*
 
 ## Installation
 
 Install via NPM:
+
 ```
 npm install react-canvas-draw --save
 ```
+
 or YARN:
+
 ```
 yarn add react-canvas-draw
 ```
 
 No additional dependencies needed.
 
-
 ## Usage
 
-*most basic default usage*
+```
+import React from "react";
+import ReactDOM from "react-dom";
+import CanvasDraw from "react-canvas-draw";
 
-*customization options (color, width, general styles)*
+ReactDOM.render(
+  <CanvasDraw />,
+  document.getElementById('root')
+);
+```
 
-*onChange callback, getSaveData func as well as loadSaveData func*
+For more examples, like saving and loading a drawing ==> look into the `/demo/src` folder.
 
-*use the mentioned funcs in a save/load example*
+Even more examples are coming, check back soon!
 
-## Contributing Development
+## Local Development
 
-*basic nwb setup, explain folder structure*
+This repo was kickstarted by nwb's awesome [react-component starter](https://github.com/insin/nwb/blob/master/docs/guides/ReactComponents.md#developing-react-components-and-libraries-with-nwb).
 
-*contribution rules in CONTRIBUTION.md (look for github guidelines)*
+You just need to clone it, yarn it & start it!
 
 ## License
 
 MIT, see LICENSE.md for details.
 
-
 [build-badge]: https://img.shields.io/travis/mBeierl/react-canvas-draw/master.png?style=flat-square
 [build]: https://travis-ci.org/mBeierl/react-canvas-draw
-
 [npm-badge]: https://img.shields.io/npm/v/react-canvas-draw.png?style=flat-square
 [npm]: https://www.npmjs.org/package/react-canvas-draw
-
 [coveralls-badge]: https://img.shields.io/coveralls/mBeierl/react-canvas-draw/master.png?style=flat-square
 [coveralls]: https://coveralls.io/github/mBeierl/react-canvas-draw
