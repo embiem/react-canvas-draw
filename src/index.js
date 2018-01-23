@@ -28,16 +28,24 @@ export default class extends Component {
   };
 
   loadSaveData = saveData => {
-    this.clear();
-    this.linesArray = JSON.parse(saveData);
-    this.linesArray.forEach((line, idx) => {
-      // draw the line with a time offset
-      // creates the cool drawing-animation effect
-      window.setTimeout(
-        () => this.drawLine(line),
-        idx * this.props.loadTimeOffset
-      );
-    });
+    try {
+      // parse first to catch any possible errors before clear()
+      const parsedSaveData = JSON.parse(saveData);
+
+      // start the load-process
+      this.clear();
+      this.linesArray = parsedSaveData;
+      this.linesArray.forEach((line, idx) => {
+        // draw the line with a time offset
+        // creates the cool drawing-animation effect
+        window.setTimeout(
+          () => this.drawLine(line),
+          idx * this.props.loadTimeOffset
+        );
+      });
+    } catch (err) {
+      console.error("ERROR while loading save data: ", err);
+    }
   };
 
   getMousePos = e => {
