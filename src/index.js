@@ -18,11 +18,6 @@ export default class extends Component {
     this.linesArray = [];
   }
 
-  componentDidMount() {
-    this.canvas.width = this.props.canvasWidth;
-    this.canvas.height = this.props.canvasHeight;
-  }
-
   getSaveData = () => {
     return JSON.stringify(this.linesArray);
   };
@@ -51,7 +46,7 @@ export default class extends Component {
         );
       });
     } catch (err) {
-      console.error("ERROR while loading save data: ", err);
+      throw(err);
     }
   };
 
@@ -66,11 +61,15 @@ export default class extends Component {
   };
 
   clear = () => {
-    this.ctx.clearRect(0, 0, this.props.canvasWidth, this.props.canvasHeight);
+    if (this.ctx) {
+      this.ctx.clearRect(0, 0, this.props.canvasWidth, this.props.canvasHeight);
+    }
     this.linesArray = [];
   };
 
   drawLine = line => {
+    if (!this.ctx) return;
+
     this.ctx.strokeStyle = line.color;
     this.ctx.lineWidth = line.size;
     this.ctx.lineCap = "round";
@@ -135,6 +134,8 @@ export default class extends Component {
   render() {
     return (
       <canvas
+        width={this.props.canvasWidth}
+        height={this.props.canvasHeight}
         className={classes.canvas}
         style={{
           background: "#fff",
@@ -142,8 +143,10 @@ export default class extends Component {
           ...this.props.style
         }}
         ref={canvas => {
-          this.canvas = canvas;
-          this.ctx = canvas.getContext("2d");
+          if (canvas) {
+            this.canvas = canvas;
+            this.ctx = canvas.getContext("2d");
+          }
         }}
         onMouseDown={this.drawStart}
         onClick={() => false}
