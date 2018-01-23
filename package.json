@@ -1,6 +1,6 @@
 {
   "name": "react-canvas-draw",
-  "version": "1.0.0",
+  "version": "0.0.1",
   "description": "react-canvas-draw React component",
   "main": "lib/index.js",
   "module": "es/index.js",
@@ -23,9 +23,11 @@
     "react": "16.x"
   },
   "devDependencies": {
+    "css-loader": "^0.28.9",
     "nwb": "0.21.x",
     "react": "^16.2.0",
-    "react-dom": "^16.2.0"
+    "react-dom": "^16.2.0",
+    "style-loader": "^0.19.1"
   },
   "author": "",
   "homepage": "",
