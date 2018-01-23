@@ -1,7 +1,5 @@
 import React, { Component } from "react";
 
-import classes from "./index.css";
-
 export default class extends Component {
   static defaultProps = {
     loadTimeOffset: 5,
@@ -136,7 +134,6 @@ export default class extends Component {
       <canvas
         width={this.props.canvasWidth}
         height={this.props.canvasHeight}
-        className={classes.canvas}
         style={{
           display: "block",
           background: "#fff",
