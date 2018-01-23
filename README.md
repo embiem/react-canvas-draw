@@ -11,6 +11,8 @@ The `/demo` folder contains examples, e.g. how customize everything or implement
 
 ## Ideas / TODOs
 
+* testing. Especially save, load, clear and drawing
+
 * canvas customization to only display drawings, by passing along the linesArray and settings a props "editDisabled" to true. Combined with the draw-load animation this might be very interesting.
 
 * modular brushes to build up a brush library. all brushes should implement their own draw function.

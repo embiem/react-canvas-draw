@@ -8,7 +8,7 @@ class Demo extends Component {
   render() {
     return (
       <div>
-        <h1>"react-canvas-draw" React Component</h1>
+        <h1>React Canvas Draw</h1>
         <h2>default</h2>
         <CanvasDraw />
         <h2>Custom Brush-Color</h2>
