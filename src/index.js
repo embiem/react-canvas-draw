@@ -29,8 +29,15 @@ export default class extends Component {
 
   loadSaveData = saveData => {
     try {
+      if (typeof saveData !== "string") {
+        throw new Error("saveData needs to be a stringified array!");
+      }
       // parse first to catch any possible errors before clear()
       const parsedSaveData = JSON.parse(saveData);
+
+      if (typeof parsedSaveData.push !== "function") {
+        throw new Error("parsedSaveData needs to be an array!");
+      }
 
       // start the load-process
       this.clear();
