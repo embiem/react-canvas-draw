@@ -48,7 +48,7 @@ You just need to clone it, yarn it & start it!
 
 ## License
 
-MIT, see LICENSE.md for details.
+MIT, see [LICENSE](https://github.com/mBeierl/react-canvas-draw/blob/master/LICENSE) for details.
 
 [build-badge]: https://img.shields.io/travis/mBeierl/react-canvas-draw/master.png?style=flat-square
 [build]: https://travis-ci.org/mBeierl/react-canvas-draw
