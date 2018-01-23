@@ -138,6 +138,7 @@ export default class extends Component {
         height={this.props.canvasHeight}
         className={classes.canvas}
         style={{
+          display: "block",
           background: "#fff",
           margin: "0.9rem",
           ...this.props.style
