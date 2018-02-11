@@ -5,8 +5,8 @@ export default class extends Component {
     loadTimeOffset: 5,
     brushSize: 6,
     brushColor: "#444",
-    canvasWidth: window ? window.innerWidth * 0.8 : 400,
-    canvasHeight: window ? window.innerHeight * 0.5 : 400
+    canvasWidth: 400,
+    canvasHeight: 400
   };
 
   constructor(props) {
