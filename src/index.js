@@ -5,8 +5,8 @@ export default class extends Component {
     loadTimeOffset: 5,
     brushSize: 10,
     brushColor: "#444",
-    canvasWidth: 800,
-    canvasHeight: 600
+    canvasWidth: window.innerWidth * 0.8,
+    canvasHeight: window.innerHeight * 0.5
   };
 
   constructor(props) {
@@ -51,10 +51,20 @@ export default class extends Component {
   getMousePos = e => {
     const rect = this.canvas.getBoundingClientRect();
 
-    // calculate mouse position inside canvas
+    // use cursor pos as default
+    let clientX = e.clientX;
+    let clientY = e.clientY;
+
+    // use first touch if available
+    if (e.touches && e.touches.length > 0) {
+      clientX = e.touches[0].clientX;
+      clientY = e.touches[0].clientY;
+    }
+
+    // return mouse/touch position inside canvas
     return {
-      x: e.clientX - rect.left,
-      y: e.clientY - rect.top
+      x: clientX - rect.left,
+      y: clientY - rect.top
     };
   };
 
@@ -86,9 +96,6 @@ export default class extends Component {
 
     // make sure we start painting, useful to draw simple dots
     this.draw(e);
-    e.clientX += 1;
-    e.clientY += 1;
-    this.draw(e);
   };
 
   drawEnd = () => {
@@ -100,8 +107,10 @@ export default class extends Component {
 
     // calculate the current x, y coords
     const { x, y } = this.getMousePos(e);
-    const newX = x;
-    const newY = y;
+
+    // Offset by 1 to ensure drawing a dot on click
+    const newX = x + 1;
+    const newY = y + 1;
 
     // create current line object
     const line = {
@@ -137,7 +146,7 @@ export default class extends Component {
         style={{
           display: "block",
           background: "#fff",
-          margin: "0.9rem",
+          touchAction: "none",
           ...this.props.style
         }}
         ref={canvas => {
@@ -151,6 +160,10 @@ export default class extends Component {
         onMouseUp={this.drawEnd}
         onMouseOut={this.drawEnd}
         onMouseMove={this.draw}
+        onTouchStart={this.drawStart}
+        onTouchMove={this.draw}
+        onTouchEnd={this.drawEnd}
+        onTouchCancel={this.drawEnd}
       />
     );
   }
