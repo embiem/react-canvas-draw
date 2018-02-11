@@ -3,10 +3,10 @@ import React, { Component } from "react";
 export default class extends Component {
   static defaultProps = {
     loadTimeOffset: 5,
-    brushSize: 10,
+    brushSize: 6,
     brushColor: "#444",
-    canvasWidth: window.innerWidth * 0.8,
-    canvasHeight: window.innerHeight * 0.5
+    canvasWidth: window ? window.innerWidth * 0.8 : 400,
+    canvasHeight: window ? window.innerHeight * 0.5 : 400
   };
 
   constructor(props) {
