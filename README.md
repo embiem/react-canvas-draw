@@ -46,6 +46,10 @@ This repo was kickstarted by nwb's awesome [react-component starter](https://git
 
 You just need to clone it, yarn it & start it!
 
+## Tips
+
+If you want to save large strings, like the stringified JSON of a drawing, I recommend you to use [pieroxy/lz-string](https://github.com/pieroxy/lz-string) for compression. It's LZ compression will bring down your long strings to only ~10% of it's original size.
+
 ## License
 
 MIT, see [LICENSE](https://github.com/mBeierl/react-canvas-draw/blob/master/LICENSE) for details.
