@@ -17,7 +17,12 @@ export default class extends Component {
   }
 
   getSaveData = () => {
-    return JSON.stringify(this.linesArray);
+    const saveData = {
+      linesArray: this.linesArray,
+      width: this.props.canvasWidth,
+      height: this.props.canvasHeight
+    };
+    return JSON.stringify(saveData);
   };
 
   loadSaveData = saveData => {
@@ -26,15 +31,36 @@ export default class extends Component {
         throw new Error("saveData needs to be a stringified array!");
       }
       // parse first to catch any possible errors before clear()
-      const parsedSaveData = JSON.parse(saveData);
+      const { linesArray, width, height } = JSON.parse(saveData);
 
-      if (typeof parsedSaveData.push !== "function") {
-        throw new Error("parsedSaveData needs to be an array!");
+      if (!linesArray || typeof linesArray.push !== "function") {
+        throw new Error("linesArray needs to be an array!");
       }
 
       // start the load-process
       this.clear();
-      this.linesArray = parsedSaveData;
+
+      if (
+        width === this.props.canvasWidth &&
+        height === this.props.canvasHeight
+      ) {
+        this.linesArray = linesArray;
+      } else {
+        // we need to rescale the lines based on saved & current dimensions
+        const scaleX = this.props.canvasWidth / width;
+        const scaleY = this.props.canvasHeight / height;
+        const scaleAvg = (scaleX + scaleY) / 2;
+
+        this.linesArray = linesArray.map(line => ({
+          ...line,
+          endX: line.endX * scaleX,
+          endY: line.endY * scaleY,
+          startX: line.startX * scaleX,
+          startY: line.startY * scaleY,
+          size: line.size * scaleAvg
+        }));
+      }
+
       this.linesArray.forEach((line, idx) => {
         // draw the line with a time offset
         // creates the cool drawing-animation effect
@@ -44,7 +70,7 @@ export default class extends Component {
         );
       });
     } catch (err) {
-      throw(err);
+      throw err;
     }
   };
 

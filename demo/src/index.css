@@ -28,3 +28,13 @@ span {
 p {
   line-height: 1.6em;
 }
+
+.tools {
+  display: flex;
+  justify-content: space-between;
+  width: 400px;
+}
+
+input[type=number] {
+  width: 50px;
+}

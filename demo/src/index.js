@@ -2,11 +2,13 @@ import React, { Component } from "react";
 import { render } from "react-dom";
 
 import CanvasDraw from "../../src";
-import "./index.css";
+import classNames from "./index.css";
 
 class Demo extends Component {
   state = {
-    color: "#ffc600"
+    color: "#ffc600",
+    width: 400,
+    height: 400
   };
   componentDidMount() {
     // let's change the color randomly every 2 seconds. fun!
@@ -56,36 +58,62 @@ class Demo extends Component {
           <span>{`<CanvasDraw loadTimeOffset={10} />`}</span>
         </p>
         <p>Try it out! Draw something, hit "Save" and then "Load".</p>
-        <button
-          onClick={() => {
-            localStorage.setItem(
-              "savedDrawing",
-              this.saveableCanvas.getSaveData()
-            );
-          }}
-        >
-          Save
-        </button>
-        <button
-          onClick={() => {
-            this.saveableCanvas.loadSaveData(
-              localStorage.getItem("savedDrawing")
-            );
-          }}
-        >
-          Load
-        </button>
-        <button
-          onClick={() => {
-            this.saveableCanvas.clear();
-          }}
-        >
-          Clear
-        </button>
+        <div className={classNames.tools}>
+          <button
+            onClick={() => {
+              localStorage.setItem(
+                "savedDrawing",
+                this.saveableCanvas.getSaveData()
+              );
+            }}
+          >
+            Save
+          </button>
+          <button
+            onClick={() => {
+              this.saveableCanvas.loadSaveData(
+                localStorage.getItem("savedDrawing")
+              );
+            }}
+          >
+            Load
+          </button>
+          <button
+            onClick={() => {
+              this.saveableCanvas.clear();
+            }}
+          >
+            Clear
+          </button>
+          <div>
+            <label>Width:</label>
+            <input
+              type="number"
+              value={this.state.width}
+              onChange={e => this.setState({ width: e.target.value })}
+            />
+          </div>
+          <div>
+            <label>Height:</label>
+            <input
+              type="number"
+              value={this.state.height}
+              onChange={e => this.setState({ height: e.target.value })}
+            />
+          </div>
+        </div>
         <CanvasDraw
           brushColor={this.state.color}
           ref={canvasDraw => (this.saveableCanvas = canvasDraw)}
+          canvasWidth={this.state.width}
+          canvasHeight={this.state.height}
         />
+        <p>
+          The saving & loading also takes different dimensions into account.
+          Draw something and save it, then change the width & height and load.
+          It will load your previously saved masterpiece scaled to the current
+          canvas dimensions.
+        </p>
         <p>
           That's it for now! Take a look at the{" "}
           <a href="https://github.com/mBeierl/react-canvas-draw/tree/master/demo/src">
