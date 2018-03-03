@@ -6,7 +6,6 @@
 
 > A simple yet powerful canvas-drawing component for React ([Demo](https://mbeierl.github.io/react-canvas-draw/)).
 
-
 ## Installation
 
 Install via NPM:
@@ -39,6 +38,18 @@ ReactDOM.render(
 For more examples, like saving and loading a drawing ==> look into the [`/demo/src` folder](https://github.com/mBeierl/react-canvas-draw/tree/master/demo/src).
 
 Even more examples are coming, check back soon!
+
+### Props
+
+```
+  static defaultProps = {
+    loadTimeOffset: 5,
+    brushSize: 6,
+    brushColor: "#444",
+    canvasWidth: 400,
+    canvasHeight: 400
+  };
+```
 
 ## Local Development
 
