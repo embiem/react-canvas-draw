@@ -14,6 +14,7 @@ export default class extends Component {
 
     this.isMouseDown = false;
     this.linesArray = [];
+    this.startDrawIdx = [];
   }
 
   getSaveData = () => {
@@ -25,7 +26,7 @@ export default class extends Component {
     return JSON.stringify(saveData);
   };
 
-  loadSaveData = saveData => {
+  loadSaveData = (saveData, immediate) => {
     try {
       if (typeof saveData !== "string") {
         throw new Error("saveData needs to be a stringified array!");
@@ -61,17 +62,30 @@ export default class extends Component {
         }));
       }
 
-      this.linesArray.forEach((line, idx) => {
-        // draw the line with a time offset
-        // creates the cool drawing-animation effect
+      this.redraw(immediate);
+    } catch (err) {
+      throw err;
+    }
+  };
+
+  redraw = immediate => {
+    if (this.ctx) {
+      this.ctx.clearRect(0, 0, this.props.canvasWidth, this.props.canvasHeight);
+    }
+
+    this.linesArray.forEach((line, idx) => {
+      // draw the line with a time offset
+      // creates the cool drawing-animation effect
+      if (!immediate) {
         window.setTimeout(
           () => this.drawLine(line),
           idx * this.props.loadTimeOffset
         );
-      });
-    } catch (err) {
-      throw err;
-    }
+      } else {
+        // if the immediate flag is true, draw without timeout
+        this.drawLine(line);
+      }
+    });
   };
 
   getMousePos = e => {
@@ -99,6 +113,18 @@ export default class extends Component {
       this.ctx.clearRect(0, 0, this.props.canvasWidth, this.props.canvasHeight);
     }
     this.linesArray = [];
+    this.startDrawIdx = [];
+  };
+
+  undo = () => {
+    if (this.startDrawIdx.length > 0) {
+      this.linesArray.splice(
+        this.startDrawIdx.pop()
+      );
+      this.redraw(true);
+      return true;
+    }
+    return false;
   };
 
   drawLine = line => {
@@ -115,6 +141,7 @@ export default class extends Component {
 
   drawStart = e => {
     this.isMouseDown = true;
+    this.startDrawIdx.push(this.linesArray.length);
 
     const { x, y } = this.getMousePos(e);
     this.x = x;

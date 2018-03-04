@@ -85,6 +85,13 @@ class Demo extends Component {
           >
             Clear
           </button>
+          <button
+            onClick={() => {
+              this.saveableCanvas.undo();
+            }}
+          >
+            Undo
+          </button>
           <div>
             <label>Width:</label>
             <input

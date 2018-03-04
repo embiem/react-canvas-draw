@@ -51,6 +51,27 @@ Even more examples are coming, check back soon!
   };
 ```
 
+### Functions
+
+Useful functions that you can call, e.g. when having a reference to this component:
+
+* `getSaveData()` returns the drawing's save-data as stringified JSON
+* `loadSaveData(saveData: String, immediate: Boolean)` loads a previously saved drawing using the saveData string, as well as an optional boolean flag to load it immediately, instead of live-drawing it.
+* `clear()` clears the canvas completely
+* `undo()` removes the latest change to the drawing. This includes everything drawn since the last MouseDown event.
+* `drawLine(line)` to draw a line. This can be useful if you want to automate drawing.  The line parameter is an object of the following form:
+```
+const line = {
+  color: this.props.brushColor,
+  size: this.props.brushSize,
+  startX: this.x,
+  startY: this.y,
+  endX: newX,
+  endY: newY
+};
+```
+
+
 ## Local Development
 
 This repo was kickstarted by nwb's awesome [react-component starter](https://github.com/insin/nwb/blob/master/docs/guides/ReactComponents.md#developing-react-components-and-libraries-with-nwb).
