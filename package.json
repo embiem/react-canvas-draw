@@ -1,6 +1,6 @@
 {
   "name": "react-canvas-draw",
-  "version": "0.1.7",
+  "version": "0.1.8",
   "description": "A simple yet powerful canvas-drawing component for React.",
   "main": "lib/index.js",
   "module": "es/index.js",
