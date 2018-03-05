@@ -15,6 +15,7 @@ export default class extends Component {
     this.isMouseDown = false;
     this.linesArray = [];
     this.startDrawIdx = [];
+    this.timeoutValidity = 0;
   }
 
   getSaveData = () => {
@@ -73,12 +74,18 @@ export default class extends Component {
       this.ctx.clearRect(0, 0, this.props.canvasWidth, this.props.canvasHeight);
     }
 
+    this.timeoutValidity++;
+    const timeoutValidity = this.timeoutValidity;
     this.linesArray.forEach((line, idx) => {
       // draw the line with a time offset
       // creates the cool drawing-animation effect
       if (!immediate) {
         window.setTimeout(
-          () => this.drawLine(line),
+          () => {
+            if (timeoutValidity === this.timeoutValidity) {
+              this.drawLine(line);
+            }
+          },
           idx * this.props.loadTimeOffset
         );
       } else {
@@ -112,6 +119,7 @@ export default class extends Component {
     if (this.ctx) {
       this.ctx.clearRect(0, 0, this.props.canvasWidth, this.props.canvasHeight);
     }
+    this.timeoutValidity++;
     this.linesArray = [];
     this.startDrawIdx = [];
   };
