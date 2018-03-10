@@ -71,15 +71,6 @@ class Demo extends Component {
           </button>
           <button
             onClick={() => {
-              this.saveableCanvas.loadSaveData(
-                localStorage.getItem("savedDrawing")
-              );
-            }}
-          >
-            Load
-          </button>
-          <button
-            onClick={() => {
               this.saveableCanvas.clear();
             }}
           >
@@ -110,16 +101,33 @@ class Demo extends Component {
           </div>
         </div>
         <CanvasDraw
-          brushColor={this.state.color}
           ref={canvasDraw => (this.saveableCanvas = canvasDraw)}
+          brushColor={this.state.color}
           canvasWidth={this.state.width}
           canvasHeight={this.state.height}
         />
         <p>
+          The following is a disabled canvas that we use to load & show your
+          saved drawing.
+        </p>
+        <button
+          onClick={() => {
+            this.loadableCanvas.loadSaveData(
+              localStorage.getItem("savedDrawing")
+            );
+          }}
+        >
+          Load what you saved previously into the following canvas:
+        </button>
+        <CanvasDraw
+          disabled
+          ref={canvasDraw => (this.loadableCanvas = canvasDraw)}
+        />
+        <p>
           The saving & loading also takes different dimensions into account.
-          Draw something and save it, then change the width & height and load.
-          It will load your previously saved masterpiece scaled to the current
-          canvas dimensions.
+          Change the width & height, draw something and save it and then load it
+          into the disabled canvas. It will load your previously saved
+          masterpiece scaled to the current canvas dimensions.
         </p>
         <p>
           That's it for now! Take a look at the{" "}

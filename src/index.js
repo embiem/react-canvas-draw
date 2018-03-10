@@ -6,7 +6,8 @@ export default class extends Component {
     brushSize: 6,
     brushColor: "#444",
     canvasWidth: 400,
-    canvasHeight: 400
+    canvasHeight: 400,
+    disabled: false
   };
 
   constructor(props) {
@@ -164,7 +165,7 @@ export default class extends Component {
   };
 
   draw = e => {
-    if (!this.isMouseDown) return;
+    if (!this.isMouseDown || this.props.disabled) return;
 
     // calculate the current x, y coords
     const { x, y } = this.getMousePos(e);
