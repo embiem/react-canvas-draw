@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import drawImage from "./drawImage";
 
 export default class extends Component {
   static defaultProps = {
@@ -7,7 +8,8 @@ export default class extends Component {
     brushColor: "#444",
     canvasWidth: 400,
     canvasHeight: 400,
-    disabled: false
+    disabled: false,
+    imgSrc: ""
   };
 
   constructor(props) {
@@ -18,6 +20,18 @@ export default class extends Component {
     this.startDrawIdx = [];
     this.timeoutValidity = 0;
   }
+
+  componentDidMount() {
+    this.drawImage();
+  }
+
+  drawImage = () => {
+    if (!this.props.imgSrc) return;
+
+    this.image = new Image();
+    this.image.src = this.props.imgSrc;
+    this.image.onload = () => drawImage({ ctx: this.ctx, img: this.image });
+  };
 
   getSaveData = () => {
     const saveData = {
@@ -75,20 +89,20 @@ export default class extends Component {
       this.ctx.clearRect(0, 0, this.props.canvasWidth, this.props.canvasHeight);
     }
 
+    // Draw image first
+    this.drawImage();
+
     this.timeoutValidity++;
     const timeoutValidity = this.timeoutValidity;
     this.linesArray.forEach((line, idx) => {
       // draw the line with a time offset
       // creates the cool drawing-animation effect
       if (!immediate) {
-        window.setTimeout(
-          () => {
-            if (timeoutValidity === this.timeoutValidity) {
-              this.drawLine(line);
-            }
-          },
-          idx * this.props.loadTimeOffset
-        );
+        window.setTimeout(() => {
+          if (timeoutValidity === this.timeoutValidity) {
+            this.drawLine(line);
+          }
+        }, idx * this.props.loadTimeOffset);
       } else {
         // if the immediate flag is true, draw without timeout
         this.drawLine(line);
@@ -116,20 +130,22 @@ export default class extends Component {
     };
   };
 
-  clear = () => {
+  clear = ({includeImage} = {}) => {
     if (this.ctx) {
       this.ctx.clearRect(0, 0, this.props.canvasWidth, this.props.canvasHeight);
     }
     this.timeoutValidity++;
     this.linesArray = [];
     this.startDrawIdx = [];
+
+    if (!includeImage) {
+      this.drawImage();
+    }
   };
 
   undo = () => {
     if (this.startDrawIdx.length > 0) {
-      this.linesArray.splice(
-        this.startDrawIdx.pop()
-      );
+      this.linesArray.splice(this.startDrawIdx.pop());
       this.redraw(true);
       return true;
     }

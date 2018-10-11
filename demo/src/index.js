@@ -49,6 +49,13 @@ class Demo extends Component {
           />
         </div>
         <CanvasDraw brushColor={this.state.color} />
+        <h2>Background Image</h2>
+        <p>You can also set the `imgSrc` prop to draw on a background-image.</p>
+        <p>It will automatically resize to fit the canvas and centered vertically & horizontally.</p>
+        <CanvasDraw
+          brushColor="rgba(155,12,60,0.3)"
+          imgSrc="https://upload.wikimedia.org/wikipedia/commons/a/a1/Nepalese_Mhapuja_Mandala.jpg"
+        />
         <h2>Save & Load</h2>
         <p>
           This part got me most excited. Very easy to use saving and loading of
@@ -133,7 +140,8 @@ class Demo extends Component {
           That's it for now! Take a look at the{" "}
           <a href="https://github.com/mBeierl/react-canvas-draw/tree/master/demo/src">
             source code of these examples
-          </a>.
+          </a>
+          .
         </p>
       </div>
     );

@@ -24,7 +24,7 @@ No additional dependencies needed.
 
 ## Usage
 
-```
+```javascript
 import React from "react";
 import ReactDOM from "react-dom";
 import CanvasDraw from "react-canvas-draw";
@@ -41,14 +41,15 @@ Even more examples are coming, check back soon!
 
 ### Props
 
-```
+```javascript
 static defaultProps = {
   loadTimeOffset: 5,
   brushSize: 6,
   brushColor: "#444",
   canvasWidth: 400,
   canvasHeight: 400,
-  disabled: false
+  disabled: false,
+  imgSrc: ""
 };
 ```
 
@@ -56,13 +57,13 @@ static defaultProps = {
 
 Useful functions that you can call, e.g. when having a reference to this component:
 
-* `getSaveData()` returns the drawing's save-data as stringified JSON
-* `loadSaveData(saveData: String, immediate: Boolean)` loads a previously saved drawing using the saveData string, as well as an optional boolean flag to load it immediately, instead of live-drawing it.
-* `clear()` clears the canvas completely
-* `undo()` removes the latest change to the drawing. This includes everything drawn since the last MouseDown event.
-* `drawLine(line)` to draw a line. This can be useful if you want to automate drawing. The line parameter is an object of the following form:
+- `getSaveData()` returns the drawing's save-data as stringified JSON
+- `loadSaveData(saveData: String, immediate: Boolean)` loads a previously saved drawing using the saveData string, as well as an optional boolean flag to load it immediately, instead of live-drawing it.
+- `clear()` clears the canvas completely
+- `undo()` removes the latest change to the drawing. This includes everything drawn since the last MouseDown event.
+- `drawLine(line)` to draw a line. This can be useful if you want to automate drawing. The line parameter is an object of the following form:
 
-```
+```javascript
 const line = {
   color: this.props.brushColor,
   size: this.props.brushSize,
