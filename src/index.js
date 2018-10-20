@@ -219,6 +219,7 @@ export default class extends Component {
   render() {
     return (
       <canvas
+	      className={this.props.className}
         width={this.props.canvasWidth}
         height={this.props.canvasHeight}
         style={{
