@@ -109,7 +109,7 @@ export default class extends PureComponent {
   handleTouchStart = e => {
     const { x, y } = this.getPointerPos(e);
     this.lazy.update({ x: x, y: y }, { both: true });
-    this.handlePointerDown(e);
+    this.handleMouseDown(e);
 
     this.mouseHasMoved = true;
   };
@@ -121,7 +121,7 @@ export default class extends PureComponent {
   };
 
   handleTouchEnd = e => {
-    this.handlePointerUp(e);
+    this.handleMouseUp(e);
     const brush = this.lazy.getBrushCoordinates();
     this.lazy.update({ x: brush.x, y: brush.y }, { both: true });
     this.mouseHasMoved = true;
@@ -209,7 +209,7 @@ export default class extends PureComponent {
   };
 
   handlePointerMove = (x, y) => {
-    const hasChanged = this.lazy.update({ x: x, y: y });
+    const hasChanged = this.lazy.update({ x, y });
     const isDisabled = !this.lazy.isEnabled();
 
     this.ctx.temp.lineJoin = "round";
@@ -323,19 +323,19 @@ export default class extends PureComponent {
   drawInterface = (ctx, pointer, brush) => {
     ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
 
-    // Draw brush point
+    // Draw brush preview
     ctx.beginPath();
     ctx.fillStyle = this.props.brushColor;
     ctx.arc(brush.x, brush.y, this.brushRadius, 0, Math.PI * 2, true);
     ctx.fill();
 
-    // Draw mouse point
+    // Draw mouse point (the one directly at the cursor)
     ctx.beginPath();
     ctx.fillStyle = "#0a0302";
     ctx.arc(pointer.x, pointer.y, 4, 0, Math.PI * 2, true);
     ctx.fill();
 
-    // Draw catharina
+    // Draw catenary
     if (this.lazy.isEnabled()) {
       ctx.beginPath();
       ctx.lineWidth = 2;
@@ -351,9 +351,9 @@ export default class extends PureComponent {
       ctx.stroke();
     }
 
-    // Draw mouse point
+    // Draw brush point (the one in the middle of the brush preview)
     ctx.beginPath();
-    ctx.fillStyle = "#222222";
+    ctx.fillStyle = "#222";
     ctx.arc(brush.x, brush.y, 2, 0, Math.PI * 2, true);
     ctx.fill();
   };
