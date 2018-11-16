@@ -145,7 +145,7 @@ class Demo extends Component {
           canvasHeight={this.state.height}
         />
         <p>
-          The following is a disabled canvas that we use to load & show your
+          The following is a disabled canvas with a hidden grid that we use to load & show your
           saved drawing.
         </p>
         <button
@@ -159,6 +159,7 @@ class Demo extends Component {
         </button>
         <CanvasDraw
           disabled
+          hideGrid
           ref={canvasDraw => (this.loadableCanvas = canvasDraw)}
         />
         <p>

@@ -25,7 +25,7 @@ const canvasTypes = [
   },
   {
     name: "drawing",
-    zIndex: 10
+    zIndex: 11
   },
   {
     name: "temp",
@@ -33,7 +33,7 @@ const canvasTypes = [
   },
   {
     name: "grid",
-    zIndex: 14
+    zIndex: 10
   }
 ];
 
@@ -43,6 +43,8 @@ export default class extends PureComponent {
     lazyRadius: 30,
     brushRadius: 12,
     brushColor: "#444",
+    gridColor: "rgba(150,150,150,0.17)",
+    hideGrid: false,
     canvasWidth: 400,
     canvasHeight: 400,
     disabled: false,
@@ -85,6 +87,7 @@ export default class extends PureComponent {
     );
     observeCanvas.observe(this.canvasContainer);
 
+    this.drawImage();
     this.loop();
 
     window.setTimeout(() => {
@@ -111,6 +114,15 @@ export default class extends PureComponent {
       this.valuesChanged = true;
     }
   }
+
+  drawImage = () => {
+    if (!this.props.imgSrc) return;
+
+    this.image = new Image();
+    this.image.src = this.props.imgSrc;
+    this.image.onload = () =>
+      drawImage({ ctx: this.ctx.grid, img: this.image });
+  };
 
   getSaveData = () => {
     const saveData = {
@@ -391,13 +403,14 @@ export default class extends PureComponent {
   };
 
   drawGrid = ctx => {
+    if (this.props.hideGrid) return;
+
     ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
 
     ctx.beginPath();
     ctx.setLineDash([5, 1]);
     ctx.setLineDash([]);
-    // ctx.strokeStyle = styleVariables.colorInterfaceGrid
-    ctx.strokeStyle = "rgba(150,150,150,0.17)";
+    ctx.strokeStyle = this.props.gridColor;
     ctx.lineWidth = 0.5;
 
     const gridSize = 25;
