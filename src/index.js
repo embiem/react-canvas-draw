@@ -1,5 +1,5 @@
-import React, { Component } from "react";
-import { LazyBrush, Point } from "lazy-brush";
+import React, { PureComponent } from "react";
+import { LazyBrush } from "lazy-brush";
 import { Catenary } from "catenary-curve";
 
 import ResizeObserver from "resize-observer-polyfill";
@@ -40,7 +40,7 @@ const canvasTypes = [
   }
 ];
 
-export default class extends Component {
+export default class extends PureComponent {
   static defaultProps = {
     loadTimeOffset: 5,
     brushSize: 6,
@@ -106,13 +106,8 @@ export default class extends Component {
     }, 100);
   }
 
-  shouldComponentUpdate() {
-    // TODO
-    return false;
-  }
-
   handleTouchStart = e => {
-    const { x, y } = this.getMousePos(e);
+    const { x, y } = this.getPointerPos(e);
     this.lazy.update({ x: x, y: y }, { both: true });
     this.handlePointerDown(e);
 
@@ -121,7 +116,7 @@ export default class extends Component {
 
   handleTouchMove = e => {
     e.preventDefault();
-    const { x, y } = this.getMousePos(e);
+    const { x, y } = this.getPointerPos(e);
     this.handlePointerMove(x, y);
   };
 
@@ -130,6 +125,30 @@ export default class extends Component {
     const brush = this.lazy.getBrushCoordinates();
     this.lazy.update({ x: brush.x, y: brush.y }, { both: true });
     this.mouseHasMoved = true;
+  };
+
+  handleMouseDown = e => {
+    e.preventDefault();
+    this.isPressing = true;
+  };
+
+  handleMouseMove = e => {
+    const { x, y } = this.getPointerPos(e);
+    this.handlePointerMove(x, y);
+  };
+
+  handleMouseUp = e => {
+    e.preventDefault();
+    this.isDrawing = false;
+    this.isPressing = false;
+    this.points.length = 0;
+
+    const dpi = window.innerWidth > 1024 ? 1 : window.devicePixelRatio;
+    const width = this.canvas.temp.width / dpi;
+    const height = this.canvas.temp.height / dpi;
+
+    this.ctx.drawing.drawImage(this.canvas.temp, 0, 0, width, height);
+    this.ctx.temp.clearRect(0, 0, width, height);
   };
 
   handleContextMenu = e => {
@@ -169,7 +188,7 @@ export default class extends Component {
     canvas.getContext("2d").scale(dpi, dpi);
   };
 
-  getMousePos = e => {
+  getPointerPos = e => {
     const rect = this.canvas.interface.getBoundingClientRect();
 
     // use cursor pos as default
@@ -187,25 +206,6 @@ export default class extends Component {
       x: clientX - rect.left,
       y: clientY - rect.top
     };
-  };
-
-  handlePointerDown = e => {
-    e.preventDefault();
-    this.isPressing = true;
-  };
-
-  handlePointerUp = e => {
-    e.preventDefault();
-    this.isDrawing = false;
-    this.isPressing = false;
-    this.points.length = 0;
-
-    const dpi = window.innerWidth > 1024 ? 1 : window.devicePixelRatio;
-    const width = this.canvas.temp.width / dpi;
-    const height = this.canvas.temp.height / dpi;
-
-    this.ctx.drawing.drawImage(this.canvas.temp, 0, 0, width, height);
-    this.ctx.temp.clearRect(0, 0, width, height);
   };
 
   handlePointerMove = (x, y) => {
@@ -335,7 +335,7 @@ export default class extends Component {
     ctx.arc(pointer.x, pointer.y, 4, 0, Math.PI * 2, true);
     ctx.fill();
 
-    //Draw catharina
+    // Draw catharina
     if (this.lazy.isEnabled()) {
       ctx.beginPath();
       ctx.lineWidth = 2;
@@ -387,26 +387,13 @@ export default class extends Component {
                 }
               }}
               style={{ ...canvasStyle, zIndex }}
-              onMouseDown={isInterface ? this.handlePointerDown : undefined}
-              onMouseUp={isInterface ? this.handlePointerUp : undefined}
-              onMouseMove={
-                isInterface
-                  ? e => {
-                      const { x, y } = this.getMousePos(e);
-                      this.handlePointerMove(x, y);
-                    }
-                  : undefined
-              }
-              onContextMenu={
-                isInterface ? e => this.handleContextMenu(e) : undefined
-              }
-              onTouchStart={
-                isInterface ? e => this.handleTouchStart(e) : undefined
-              }
-              onTouchEnd={isInterface ? e => this.handleTouchEnd(e) : undefined}
-              onTouchMove={
-                isInterface ? e => this.handleTouchMove(e) : undefined
-              }
+              onMouseDown={isInterface ? this.handleMouseDown : undefined}
+              onMouseUp={isInterface ? this.handleMouseUp : undefined}
+              onMouseMove={isInterface ? this.handleMouseMove : undefined}
+              onContextMenu={isInterface ? this.handleContextMenu : undefined}
+              onTouchStart={isInterface ? this.handleTouchStart : undefined}
+              onTouchEnd={isInterface ? this.handleTouchEnd : undefined}
+              onTouchMove={isInterface ? this.handleTouchMove : undefined}
             />
           );
         })}
