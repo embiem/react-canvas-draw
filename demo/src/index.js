@@ -8,7 +8,9 @@ class Demo extends Component {
   state = {
     color: "#ffc600",
     width: 400,
-    height: 400
+    height: 400,
+    brushRadius: 12,
+    lazyRadius: 30
   };
   componentDidMount() {
     // let's change the color randomly every 2 seconds. fun!
@@ -113,10 +115,32 @@ class Demo extends Component {
               }
             />
           </div>
+          <div>
+            <label>Brush-Radius:</label>
+            <input
+              type="number"
+              value={this.state.brushRadius}
+              onChange={e =>
+                this.setState({ brushRadius: parseInt(e.target.value, 10) })
+              }
+            />
+          </div>
+          <div>
+            <label>Lazy-Radius:</label>
+            <input
+              type="number"
+              value={this.state.lazyRadius}
+              onChange={e =>
+                this.setState({ lazyRadius: parseInt(e.target.value, 10) })
+              }
+            />
+          </div>
         </div>
         <CanvasDraw
           ref={canvasDraw => (this.saveableCanvas = canvasDraw)}
           brushColor={this.state.color}
+          brushRadius={this.state.brushRadius}
+          lazyRadius={this.state.lazyRadius}
           canvasWidth={this.state.width}
           canvasHeight={this.state.height}
         />

@@ -6,8 +6,6 @@ import ResizeObserver from "resize-observer-polyfill";
 
 import drawImage from "./drawImage";
 
-const LAZY_RADIUS = 60;
-
 function midPointBtw(p1, p2) {
   return {
     x: p1.x + (p2.x - p1.x) / 2,
@@ -42,6 +40,7 @@ const canvasTypes = [
 export default class extends PureComponent {
   static defaultProps = {
     loadTimeOffset: 5,
+    lazyRadius: 30,
     brushRadius: 12,
     brushColor: "#444",
     canvasWidth: 400,
@@ -59,7 +58,7 @@ export default class extends PureComponent {
     this.catenary = new Catenary();
 
     this.lazy = new LazyBrush({
-      radius: LAZY_RADIUS,
+      radius: props.lazyRadius,
       enabled: true,
       initialPoint: {
         x: window.innerWidth / 2,
@@ -75,7 +74,7 @@ export default class extends PureComponent {
     this.isDrawing = false;
     this.isPressing = false;
 
-    this.chainLength = LAZY_RADIUS;
+    this.chainLength = props.lazyRadius;
 
     this.dpi = 1;
   }
@@ -105,6 +104,14 @@ export default class extends PureComponent {
     }, 100);
   }
 
+  componentDidUpdate(prevProps) {
+    if (prevProps.lazyRadius !== this.props.lazyRadius) {
+      this.chainLength = this.props.lazyRadius;
+      this.lazy.setRadius(this.props.lazyRadius);
+      this.valuesChanged = true;
+    }
+  }
+
   getSaveData = () => {
     const saveData = {
       lines: this.lines,
@@ -119,14 +126,12 @@ export default class extends PureComponent {
       throw new Error("saveData needs to be of type object!");
     }
 
-    // parse first to catch any possible errors before clear()
     const { lines, width, height } = saveData;
 
     if (!lines || typeof lines.push !== "function") {
       throw new Error("saveData.lines needs to be an array!");
     }
 
-    // start the load-process
     this.clearCanvas();
 
     if (
@@ -150,15 +155,18 @@ export default class extends PureComponent {
       }));
     }
 
-    let curTime = 0;
+    // Simulate live-drawing of the loaded lines
+    let curTime = 0,
+      timeoutGap = immediate ? 0 : this.props.loadTimeOffset;
+
     this.lines.forEach(line => {
-      curTime += 5;
+      curTime += timeoutGap;
       window.setTimeout(() => {
         this.handleMouseDown(new Event(""));
       }, curTime);
 
       line.points.forEach(p => {
-        curTime += 5;
+        curTime += timeoutGap;
         window.setTimeout(() => {
           // Add new point
           this.points.push(p);
@@ -174,7 +182,7 @@ export default class extends PureComponent {
         }, curTime);
       });
 
-      curTime += 5;
+      curTime += timeoutGap;
       window.setTimeout(() => {
         this.handleMouseUp(new Event(""));
       }, curTime);
@@ -286,6 +294,8 @@ export default class extends PureComponent {
   };
 
   handlePointerMove = (x, y) => {
+    if (this.props.disabled) return;
+
     const hasChanged = this.lazy.update({ x, y });
     const isDisabled = !this.lazy.isEnabled();
 
