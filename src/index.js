@@ -1,5 +1,44 @@
 import React, { Component } from "react";
+import { LazyBrush, Point } from "lazy-brush";
+import { Catenary } from "catenary-curve";
+
+import ResizeObserver from "resize-observer-polyfill";
+
 import drawImage from "./drawImage";
+
+const LAZY_RADIUS = 60;
+const BRUSH_RADIUS = 12.5;
+
+function midPointBtw(p1, p2) {
+  return {
+    x: p1.x + (p2.x - p1.x) / 2,
+    y: p1.y + (p2.y - p1.y) / 2
+  };
+}
+
+const canvasStyle = {
+  display: "block",
+  position: "absolute"
+};
+
+const canvasTypes = [
+  {
+    name: "interface",
+    zIndex: 15
+  },
+  {
+    name: "drawing",
+    zIndex: 10
+  },
+  {
+    name: "temp",
+    zIndex: 12
+  },
+  {
+    name: "grid",
+    zIndex: 14
+  }
+];
 
 export default class extends Component {
   static defaultProps = {
@@ -15,112 +54,132 @@ export default class extends Component {
   constructor(props) {
     super(props);
 
-    this.isMouseDown = false;
-    this.linesArray = [];
-    this.startDrawIdx = [];
-    this.timeoutValidity = 0;
+    this.canvas = {};
+    this.ctx = {};
+
+    this.catenary = new Catenary();
+
+    this.lazy = new LazyBrush({
+      radius: LAZY_RADIUS,
+      enabled: true,
+      initialPoint: {
+        x: window.innerWidth / 2,
+        y: window.innerHeight / 2
+      }
+    });
+
+    this.points = [];
+
+    this.mouseHasMoved = true;
+    this.valuesChanged = true;
+    this.isDrawing = false;
+    this.isPressing = false;
+
+    this.brushRadius = BRUSH_RADIUS;
+    this.chainLength = LAZY_RADIUS;
+
+    this.dpi = 1;
   }
 
   componentDidMount() {
-    this.drawImage();
+    const observeCanvas = new ResizeObserver((entries, observer) =>
+      this.handleCanvasResize(entries, observer)
+    );
+    observeCanvas.observe(this.canvasContainer);
+
+    this.loop();
+
+    window.setTimeout(() => {
+      const initX = window.innerWidth / 2;
+      const initY = window.innerHeight / 2;
+      this.lazy.update(
+        { x: initX - this.chainLength / 4, y: initY },
+        { both: true }
+      );
+      this.lazy.update(
+        { x: initX + this.chainLength / 4, y: initY },
+        { both: false }
+      );
+      this.mouseHasMoved = true;
+      this.valuesChanged = true;
+      this.clearCanvas();
+    }, 100);
   }
 
-  drawImage = () => {
-    if (!this.props.imgSrc) return;
+  shouldComponentUpdate() {
+    // TODO
+    return false;
+  }
 
-    this.image = new Image();
-    this.image.src = this.props.imgSrc;
-    this.image.onload = () => drawImage({ ctx: this.ctx, img: this.image });
+  handleTouchStart = e => {
+    const { x, y } = this.getMousePos(e);
+    this.lazy.update({ x: x, y: y }, { both: true });
+    this.handlePointerDown(e);
+
+    this.mouseHasMoved = true;
   };
 
-  getSaveData = () => {
-    const saveData = {
-      linesArray: this.linesArray,
-      width: this.props.canvasWidth,
-      height: this.props.canvasHeight
-    };
-    return JSON.stringify(saveData);
+  handleTouchMove = e => {
+    e.preventDefault();
+    const { x, y } = this.getMousePos(e);
+    this.handlePointerMove(x, y);
   };
 
-  loadSaveData = (saveData, immediate) => {
-    try {
-      if (typeof saveData !== "string") {
-        throw new Error("saveData needs to be a stringified array!");
-      }
-      // parse first to catch any possible errors before clear()
-      const { linesArray, width, height } = JSON.parse(saveData);
+  handleTouchEnd = e => {
+    this.handlePointerUp(e);
+    const brush = this.lazy.getBrushCoordinates();
+    this.lazy.update({ x: brush.x, y: brush.y }, { both: true });
+    this.mouseHasMoved = true;
+  };
 
-      if (!linesArray || typeof linesArray.push !== "function") {
-        throw new Error("linesArray needs to be an array!");
-      }
-
-      // start the load-process
-      this.clear();
-
-      if (
-        width === this.props.canvasWidth &&
-        height === this.props.canvasHeight
-      ) {
-        this.linesArray = linesArray;
-      } else {
-        // we need to rescale the lines based on saved & current dimensions
-        const scaleX = this.props.canvasWidth / width;
-        const scaleY = this.props.canvasHeight / height;
-        const scaleAvg = (scaleX + scaleY) / 2;
-
-        this.linesArray = linesArray.map(line => ({
-          ...line,
-          endX: line.endX * scaleX,
-          endY: line.endY * scaleY,
-          startX: line.startX * scaleX,
-          startY: line.startY * scaleY,
-          size: line.size * scaleAvg
-        }));
-      }
-
-      this.redraw(immediate);
-    } catch (err) {
-      throw err;
+  handleContextMenu = e => {
+    e.preventDefault();
+    if (e.button === 2) {
+      this.clearCanvas();
     }
   };
 
-  redraw = immediate => {
-    if (this.ctx) {
-      this.ctx.clearRect(0, 0, this.props.canvasWidth, this.props.canvasHeight);
+  handleCanvasResize = (entries, observer) => {
+    this.dpi = window.devicePixelRatio;
+
+    for (const entry of entries) {
+      const { width, height } = entry.contentRect;
+      this.setCanvasSize(this.canvas.interface, width, height, 1.25);
+      this.setCanvasSize(this.canvas.drawing, width, height, 1);
+      this.setCanvasSize(this.canvas.temp, width, height, 1);
+      this.setCanvasSize(this.canvas.grid, width, height, 2);
+
+      this.drawGrid(this.ctx.grid);
+      this.loop({ once: true });
+    }
+  };
+
+  setCanvasSize = (canvas, width, height, maxDpi = 4) => {
+    let dpi = this.dpi;
+
+    // reduce canvas size for hidpi desktop screens
+    if (window.innerWidth > 1024) {
+      dpi = Math.min(this.dpi, maxDpi);
     }
 
-    // Draw image first
-    this.drawImage();
-
-    this.timeoutValidity++;
-    const timeoutValidity = this.timeoutValidity;
-    this.linesArray.forEach((line, idx) => {
-      // draw the line with a time offset
-      // creates the cool drawing-animation effect
-      if (!immediate) {
-        window.setTimeout(() => {
-          if (timeoutValidity === this.timeoutValidity) {
-            this.drawLine(line);
-          }
-        }, idx * this.props.loadTimeOffset);
-      } else {
-        // if the immediate flag is true, draw without timeout
-        this.drawLine(line);
-      }
-    });
+    canvas.width = width * dpi;
+    canvas.height = height * dpi;
+    canvas.style.width = width;
+    canvas.style.height = height;
+    canvas.getContext("2d").scale(dpi, dpi);
   };
 
   getMousePos = e => {
-    const rect = this.canvas.getBoundingClientRect();
+    const rect = this.canvas.interface.getBoundingClientRect();
 
     // use cursor pos as default
     let clientX = e.clientX;
     let clientY = e.clientY;
 
     // use first touch if available
-    if (e.touches && e.touches.length > 0) {
-      clientX = e.touches[0].clientX;
-      clientY = e.touches[0].clientY;
+    if (e.changedTouches && e.changedTouches.length > 0) {
+      clientX = e.changedTouches[0].clientX;
+      clientY = e.changedTouches[0].clientY;
     }
 
     // return mouse/touch position inside canvas
@@ -130,119 +189,228 @@ export default class extends Component {
     };
   };
 
-  clear = ({includeImage} = {}) => {
-    if (this.ctx) {
-      this.ctx.clearRect(0, 0, this.props.canvasWidth, this.props.canvasHeight);
-    }
-    this.timeoutValidity++;
-    this.linesArray = [];
-    this.startDrawIdx = [];
-
-    if (!includeImage) {
-      this.drawImage();
-    }
+  handlePointerDown = e => {
+    e.preventDefault();
+    this.isPressing = true;
   };
 
-  undo = () => {
-    if (this.startDrawIdx.length > 0) {
-      this.linesArray.splice(this.startDrawIdx.pop());
-      this.redraw(true);
-      return true;
-    }
-    return false;
+  handlePointerUp = e => {
+    e.preventDefault();
+    this.isDrawing = false;
+    this.isPressing = false;
+    this.points.length = 0;
+
+    const dpi = window.innerWidth > 1024 ? 1 : window.devicePixelRatio;
+    const width = this.canvas.temp.width / dpi;
+    const height = this.canvas.temp.height / dpi;
+
+    this.ctx.drawing.drawImage(this.canvas.temp, 0, 0, width, height);
+    this.ctx.temp.clearRect(0, 0, width, height);
   };
 
-  drawLine = line => {
-    if (!this.ctx) return;
+  handlePointerMove = (x, y) => {
+    const hasChanged = this.lazy.update({ x: x, y: y });
+    const isDisabled = !this.lazy.isEnabled();
 
-    this.ctx.strokeStyle = line.color;
-    this.ctx.lineWidth = line.size;
-    this.ctx.lineCap = "round";
-    this.ctx.beginPath();
-    this.ctx.moveTo(line.startX, line.startY);
-    this.ctx.lineTo(line.endX, line.endY);
-    this.ctx.stroke();
-  };
+    this.ctx.temp.lineJoin = "round";
+    this.ctx.temp.lineCap = "round";
+    this.ctx.temp.strokeStyle = this.props.brushColor;
 
-  drawStart = e => {
-    this.isMouseDown = true;
-    this.startDrawIdx.push(this.linesArray.length);
-
-    const { x, y } = this.getMousePos(e);
-    this.x = x;
-    this.y = y;
-
-    // make sure we start painting, useful to draw simple dots
-    this.draw(e);
-  };
-
-  drawEnd = () => {
-    this.isMouseDown = false;
-  };
-
-  draw = e => {
-    if (!this.isMouseDown || this.props.disabled) return;
-
-    // calculate the current x, y coords
-    const { x, y } = this.getMousePos(e);
-
-    // Offset by 1 to ensure drawing a dot on click
-    const newX = x + 1;
-    const newY = y + 1;
-
-    // create current line object
-    const line = {
-      color: this.props.brushColor,
-      size: this.props.brushSize,
-      startX: this.x,
-      startY: this.y,
-      endX: newX,
-      endY: newY
-    };
-
-    // actually draw the line
-    this.drawLine(line);
-
-    // push it to our array of lines
-    this.linesArray.push(line);
-
-    // notify parent that a new line was added
-    if (typeof this.props.onChange === "function") {
-      this.props.onChange(this.linesArray);
+    if (
+      (this.isPressing && hasChanged && !this.isDrawing) ||
+      (isDisabled && this.isPressing)
+    ) {
+      this.isDrawing = true;
+      this.points.push(this.lazy.brush.toObject());
     }
 
-    // set current x, y coords
-    this.x = newX;
-    this.y = newY;
+    if (this.isDrawing && (this.lazy.brushHasMoved() || isDisabled)) {
+      this.ctx.temp.clearRect(
+        0,
+        0,
+        this.ctx.temp.canvas.width,
+        this.ctx.temp.canvas.height
+      );
+      this.ctx.temp.lineWidth = this.brushRadius * 2;
+      this.points.push(this.lazy.brush.toObject());
+
+      var p1 = this.points[0];
+      var p2 = this.points[1];
+
+      this.ctx.temp.moveTo(p2.x, p2.y);
+      this.ctx.temp.beginPath();
+
+      for (var i = 1, len = this.points.length; i < len; i++) {
+        // we pick the point between pi+1 & pi+2 as the
+        // end point and p1 as our control point
+        var midPoint = midPointBtw(p1, p2);
+        this.ctx.temp.quadraticCurveTo(p1.x, p1.y, midPoint.x, midPoint.y);
+        p1 = this.points[i];
+        p2 = this.points[i + 1];
+      }
+      // Draw last line as a straight line while
+      // we wait for the next point to be able to calculate
+      // the bezier control point
+      this.ctx.temp.lineTo(p1.x, p1.y);
+      this.ctx.temp.stroke();
+    }
+
+    this.mouseHasMoved = true;
+  };
+
+  clearCanvas = () => {
+    this.valuesChanged = true;
+    this.ctx.drawing.clearRect(
+      0,
+      0,
+      this.canvas.drawing.width,
+      this.canvas.drawing.height
+    );
+    this.ctx.temp.clearRect(
+      0,
+      0,
+      this.canvas.temp.width,
+      this.canvas.temp.height
+    );
+  };
+
+  loop = ({ once = false } = {}) => {
+    if (this.mouseHasMoved || this.valuesChanged) {
+      const pointer = this.lazy.getPointerCoordinates();
+      const brush = this.lazy.getBrushCoordinates();
+
+      this.drawInterface(this.ctx.interface, pointer, brush);
+      this.mouseHasMoved = false;
+      this.valuesChanged = false;
+    }
+
+    if (!once) {
+      window.requestAnimationFrame(() => {
+        this.loop();
+      });
+    }
+  };
+
+  drawGrid = ctx => {
+    ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
+
+    ctx.beginPath();
+    ctx.setLineDash([5, 1]);
+    ctx.setLineDash([]);
+    // ctx.strokeStyle = styleVariables.colorInterfaceGrid
+    ctx.strokeStyle = "rgba(150,150,150,0.17)";
+    ctx.lineWidth = 0.5;
+
+    const gridSize = 25;
+
+    let countX = 0;
+    while (countX < ctx.canvas.width) {
+      countX += gridSize;
+      ctx.moveTo(countX, 0);
+      ctx.lineTo(countX, ctx.canvas.height);
+    }
+    ctx.stroke();
+
+    let countY = 0;
+    while (countY < ctx.canvas.height) {
+      countY += gridSize;
+      ctx.moveTo(0, countY);
+      ctx.lineTo(ctx.canvas.width, countY);
+    }
+    ctx.stroke();
+  };
+
+  drawInterface = (ctx, pointer, brush) => {
+    ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
+
+    // Draw brush point
+    ctx.beginPath();
+    ctx.fillStyle = this.props.brushColor;
+    ctx.arc(brush.x, brush.y, this.brushRadius, 0, Math.PI * 2, true);
+    ctx.fill();
+
+    // Draw mouse point
+    ctx.beginPath();
+    ctx.fillStyle = "#0a0302";
+    ctx.arc(pointer.x, pointer.y, 4, 0, Math.PI * 2, true);
+    ctx.fill();
+
+    //Draw catharina
+    if (this.lazy.isEnabled()) {
+      ctx.beginPath();
+      ctx.lineWidth = 2;
+      ctx.lineCap = "round";
+      ctx.setLineDash([2, 4]);
+      ctx.strokeStyle = "#0a0302";
+      this.catenary.drawToCanvas(
+        this.ctx.interface,
+        brush,
+        pointer,
+        this.chainLength
+      );
+      ctx.stroke();
+    }
+
+    // Draw mouse point
+    ctx.beginPath();
+    ctx.fillStyle = "#222222";
+    ctx.arc(brush.x, brush.y, 2, 0, Math.PI * 2, true);
+    ctx.fill();
   };
 
   render() {
     return (
-      <canvas
-        width={this.props.canvasWidth}
-        height={this.props.canvasHeight}
+      <div
         style={{
           display: "block",
           background: "#fff",
           touchAction: "none",
+          width: this.props.canvasWidth,
+          height: this.props.canvasHeight,
           ...this.props.style
         }}
-        ref={canvas => {
-          if (canvas) {
-            this.canvas = canvas;
-            this.ctx = canvas.getContext("2d");
+        ref={container => {
+          if (container) {
+            this.canvasContainer = container;
           }
         }}
-        onMouseDown={this.drawStart}
-        onClick={() => false}
-        onMouseUp={this.drawEnd}
-        onMouseOut={this.drawEnd}
-        onMouseMove={this.draw}
-        onTouchStart={this.drawStart}
-        onTouchMove={this.draw}
-        onTouchEnd={this.drawEnd}
-        onTouchCancel={this.drawEnd}
-      />
+      >
+        {canvasTypes.map(({ name, zIndex }) => {
+          const isInterface = name === "interface";
+          return (
+            <canvas
+              key={name}
+              ref={canvas => {
+                if (canvas) {
+                  this.canvas[name] = canvas;
+                  this.ctx[name] = canvas.getContext("2d");
+                }
+              }}
+              style={{ ...canvasStyle, zIndex }}
+              onMouseDown={isInterface ? this.handlePointerDown : undefined}
+              onMouseUp={isInterface ? this.handlePointerUp : undefined}
+              onMouseMove={
+                isInterface
+                  ? e => {
+                      const { x, y } = this.getMousePos(e);
+                      this.handlePointerMove(x, y);
+                    }
+                  : undefined
+              }
+              onContextMenu={
+                isInterface ? e => this.handleContextMenu(e) : undefined
+              }
+              onTouchStart={
+                isInterface ? e => this.handleTouchStart(e) : undefined
+              }
+              onTouchEnd={isInterface ? e => this.handleTouchEnd(e) : undefined}
+              onTouchMove={
+                isInterface ? e => this.handleTouchMove(e) : undefined
+              }
+            />
+          );
+        })}
+      </div>
     );
   }
 }
