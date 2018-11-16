@@ -109,8 +109,13 @@ export default class extends PureComponent {
 
   componentDidUpdate(prevProps) {
     if (prevProps.lazyRadius !== this.props.lazyRadius) {
+      // Set new values
       this.chainLength = this.props.lazyRadius;
       this.lazy.setRadius(this.props.lazyRadius);
+    }
+
+    if (JSON.stringify(prevProps) !== JSON.stringify(this.props)) {
+      // Signal this.loop function that values changed
       this.valuesChanged = true;
     }
   }
