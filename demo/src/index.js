@@ -51,7 +51,10 @@ class Demo extends Component {
         <CanvasDraw brushColor={this.state.color} />
         <h2>Background Image</h2>
         <p>You can also set the `imgSrc` prop to draw on a background-image.</p>
-        <p>It will automatically resize to fit the canvas and centered vertically & horizontally.</p>
+        <p>
+          It will automatically resize to fit the canvas and centered vertically
+          & horizontally.
+        </p>
         <CanvasDraw
           brushColor="rgba(155,12,60,0.3)"
           imgSrc="https://upload.wikimedia.org/wikipedia/commons/a/a1/Nepalese_Mhapuja_Mandala.jpg"
@@ -70,7 +73,7 @@ class Demo extends Component {
             onClick={() => {
               localStorage.setItem(
                 "savedDrawing",
-                this.saveableCanvas.getSaveData()
+                JSON.stringify(this.saveableCanvas.getSaveData())
               );
             }}
           >
@@ -95,7 +98,9 @@ class Demo extends Component {
             <input
               type="number"
               value={this.state.width}
-              onChange={e => this.setState({ width: e.target.value })}
+              onChange={e =>
+                this.setState({ width: parseInt(e.target.value, 10) })
+              }
             />
           </div>
           <div>
@@ -103,7 +108,9 @@ class Demo extends Component {
             <input
               type="number"
               value={this.state.height}
-              onChange={e => this.setState({ height: e.target.value })}
+              onChange={e =>
+                this.setState({ height: parseInt(e.target.value, 10) })
+              }
             />
           </div>
         </div>
@@ -120,7 +127,7 @@ class Demo extends Component {
         <button
           onClick={() => {
             this.loadableCanvas.loadSaveData(
-              localStorage.getItem("savedDrawing")
+              JSON.parse(localStorage.getItem("savedDrawing"))
             );
           }}
         >

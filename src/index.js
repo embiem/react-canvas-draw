@@ -7,7 +7,6 @@ import ResizeObserver from "resize-observer-polyfill";
 import drawImage from "./drawImage";
 
 const LAZY_RADIUS = 60;
-const BRUSH_RADIUS = 12.5;
 
 function midPointBtw(p1, p2) {
   return {
@@ -43,7 +42,7 @@ const canvasTypes = [
 export default class extends PureComponent {
   static defaultProps = {
     loadTimeOffset: 5,
-    brushSize: 6,
+    brushRadius: 12,
     brushColor: "#444",
     canvasWidth: 400,
     canvasHeight: 400,
@@ -69,13 +68,13 @@ export default class extends PureComponent {
     });
 
     this.points = [];
+    this.lines = [];
 
     this.mouseHasMoved = true;
     this.valuesChanged = true;
     this.isDrawing = false;
     this.isPressing = false;
 
-    this.brushRadius = BRUSH_RADIUS;
     this.chainLength = LAZY_RADIUS;
 
     this.dpi = 1;
@@ -105,6 +104,82 @@ export default class extends PureComponent {
       this.clearCanvas();
     }, 100);
   }
+
+  getSaveData = () => {
+    const saveData = {
+      lines: this.lines,
+      width: this.props.canvasWidth,
+      height: this.props.canvasHeight
+    };
+    return saveData;
+  };
+
+  loadSaveData = (saveData, immediate) => {
+    if (typeof saveData !== "object") {
+      throw new Error("saveData needs to be of type object!");
+    }
+
+    // parse first to catch any possible errors before clear()
+    const { lines, width, height } = saveData;
+
+    if (!lines || typeof lines.push !== "function") {
+      throw new Error("saveData.lines needs to be an array!");
+    }
+
+    // start the load-process
+    this.clearCanvas();
+
+    if (
+      width === this.props.canvasWidth &&
+      height === this.props.canvasHeight
+    ) {
+      this.lines = lines;
+    } else {
+      // we need to rescale the lines based on saved & current dimensions
+      const scaleX = this.props.canvasWidth / width;
+      const scaleY = this.props.canvasHeight / height;
+      const scaleAvg = (scaleX + scaleY) / 2;
+
+      this.lines = lines.map(line => ({
+        ...line,
+        points: line.points.map(p => ({
+          x: p.x * scaleX,
+          y: p.y * scaleY
+        })),
+        brushRadius: line.brushRadius * scaleAvg
+      }));
+    }
+
+    let curTime = 0;
+    this.lines.forEach(line => {
+      curTime += 5;
+      window.setTimeout(() => {
+        this.handleMouseDown(new Event(""));
+      }, curTime);
+
+      line.points.forEach(p => {
+        curTime += 5;
+        window.setTimeout(() => {
+          // Add new point
+          this.points.push(p);
+
+          if (this.points.length > 1) {
+            // Draw current points
+            this.drawPoints({
+              points: this.points,
+              brushColor: line.brushColor,
+              brushRadius: line.brushRadius
+            });
+          }
+        }, curTime);
+      });
+
+      curTime += 5;
+      window.setTimeout(() => {
+        this.handleMouseUp(new Event(""));
+      }, curTime);
+    });
+  };
 
   handleTouchStart = e => {
     const { x, y } = this.getPointerPos(e);
@@ -141,6 +216,15 @@ export default class extends PureComponent {
     e.preventDefault();
     this.isDrawing = false;
     this.isPressing = false;
+
+    // Save as new line
+    this.lines.push({
+      points: [...this.points],
+      brushColor: this.props.brushColor,
+      brushRadius: this.props.brushRadius
+    });
+
+    // Reset points array
     this.points.length = 0;
 
     const dpi = window.innerWidth > 1024 ? 1 : window.devicePixelRatio;
@@ -149,13 +233,6 @@ export default class extends PureComponent {
 
     this.ctx.drawing.drawImage(this.canvas.temp, 0, 0, width, height);
     this.ctx.temp.clearRect(0, 0, width, height);
-  };
-
-  handleContextMenu = e => {
-    e.preventDefault();
-    if (e.button === 2) {
-      this.clearCanvas();
-    }
   };
 
   handleCanvasResize = (entries, observer) => {
@@ -212,50 +289,62 @@ export default class extends PureComponent {
     const hasChanged = this.lazy.update({ x, y });
     const isDisabled = !this.lazy.isEnabled();
 
-    this.ctx.temp.lineJoin = "round";
-    this.ctx.temp.lineCap = "round";
-    this.ctx.temp.strokeStyle = this.props.brushColor;
-
     if (
       (this.isPressing && hasChanged && !this.isDrawing) ||
       (isDisabled && this.isPressing)
     ) {
+      // Start drawing and add point
       this.isDrawing = true;
       this.points.push(this.lazy.brush.toObject());
     }
 
     if (this.isDrawing && (this.lazy.brushHasMoved() || isDisabled)) {
-      this.ctx.temp.clearRect(
-        0,
-        0,
-        this.ctx.temp.canvas.width,
-        this.ctx.temp.canvas.height
-      );
-      this.ctx.temp.lineWidth = this.brushRadius * 2;
+      // Add new point
       this.points.push(this.lazy.brush.toObject());
 
-      var p1 = this.points[0];
-      var p2 = this.points[1];
-
-      this.ctx.temp.moveTo(p2.x, p2.y);
-      this.ctx.temp.beginPath();
-
-      for (var i = 1, len = this.points.length; i < len; i++) {
-        // we pick the point between pi+1 & pi+2 as the
-        // end point and p1 as our control point
-        var midPoint = midPointBtw(p1, p2);
-        this.ctx.temp.quadraticCurveTo(p1.x, p1.y, midPoint.x, midPoint.y);
-        p1 = this.points[i];
-        p2 = this.points[i + 1];
-      }
-      // Draw last line as a straight line while
-      // we wait for the next point to be able to calculate
-      // the bezier control point
-      this.ctx.temp.lineTo(p1.x, p1.y);
-      this.ctx.temp.stroke();
+      // Draw current points
+      this.drawPoints({
+        points: this.points,
+        brushColor: this.props.brushColor,
+        brushRadius: this.props.brushRadius
+      });
     }
 
     this.mouseHasMoved = true;
+  };
+
+  drawPoints = ({ points, brushColor, brushRadius }) => {
+    this.ctx.temp.lineJoin = "round";
+    this.ctx.temp.lineCap = "round";
+    this.ctx.temp.strokeStyle = brushColor;
+
+    this.ctx.temp.clearRect(
+      0,
+      0,
+      this.ctx.temp.canvas.width,
+      this.ctx.temp.canvas.height
+    );
+    this.ctx.temp.lineWidth = brushRadius * 2;
+
+    let p1 = points[0];
+    let p2 = points[1];
+
+    this.ctx.temp.moveTo(p2.x, p2.y);
+    this.ctx.temp.beginPath();
+
+    for (var i = 1, len = points.length; i < len; i++) {
+      // we pick the point between pi+1 & pi+2 as the
+      // end point and p1 as our control point
+      var midPoint = midPointBtw(p1, p2);
+      this.ctx.temp.quadraticCurveTo(p1.x, p1.y, midPoint.x, midPoint.y);
+      p1 = points[i];
+      p2 = points[i + 1];
+    }
+    // Draw last line as a straight line while
+    // we wait for the next point to be able to calculate
+    // the bezier control point
+    this.ctx.temp.lineTo(p1.x, p1.y);
+    this.ctx.temp.stroke();
   };
 
   clearCanvas = () => {
@@ -326,7 +415,7 @@ export default class extends PureComponent {
     // Draw brush preview
     ctx.beginPath();
     ctx.fillStyle = this.props.brushColor;
-    ctx.arc(brush.x, brush.y, this.brushRadius, 0, Math.PI * 2, true);
+    ctx.arc(brush.x, brush.y, this.props.brushRadius, 0, Math.PI * 2, true);
     ctx.fill();
 
     // Draw mouse point (the one directly at the cursor)
@@ -390,7 +479,6 @@ export default class extends PureComponent {
               onMouseDown={isInterface ? this.handleMouseDown : undefined}
               onMouseUp={isInterface ? this.handleMouseUp : undefined}
               onMouseMove={isInterface ? this.handleMouseMove : undefined}
-              onContextMenu={isInterface ? this.handleContextMenu : undefined}
               onTouchStart={isInterface ? this.handleTouchStart : undefined}
               onTouchEnd={isInterface ? this.handleTouchEnd : undefined}
               onTouchMove={isInterface ? this.handleTouchMove : undefined}
