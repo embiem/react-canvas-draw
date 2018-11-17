@@ -19,7 +19,11 @@
     "test:watch": "nwb test-react --server",
     "deploy": "npm run build && gh-pages -d demo/dist"
   },
-  "dependencies": {},
+  "dependencies": {
+    "catenary-curve": "^1.0.1",
+    "lazy-brush": "^1.0.1",
+    "resize-observer-polyfill": "^1.5.0"
+  },
   "peerDependencies": {
     "react": "16.x"
   },

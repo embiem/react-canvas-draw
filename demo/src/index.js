@@ -8,7 +8,9 @@ class Demo extends Component {
   state = {
     color: "#ffc600",
     width: 400,
-    height: 400
+    height: 400,
+    brushRadius: 12,
+    lazyRadius: 30
   };
   componentDidMount() {
     // let's change the color randomly every 2 seconds. fun!
@@ -51,7 +53,10 @@ class Demo extends Component {
         <CanvasDraw brushColor={this.state.color} />
         <h2>Background Image</h2>
         <p>You can also set the `imgSrc` prop to draw on a background-image.</p>
-        <p>It will automatically resize to fit the canvas and centered vertically & horizontally.</p>
+        <p>
+          It will automatically resize to fit the canvas and centered vertically
+          & horizontally.
+        </p>
         <CanvasDraw
           brushColor="rgba(155,12,60,0.3)"
           imgSrc="https://upload.wikimedia.org/wikipedia/commons/a/a1/Nepalese_Mhapuja_Mandala.jpg"
@@ -70,7 +75,7 @@ class Demo extends Component {
             onClick={() => {
               localStorage.setItem(
                 "savedDrawing",
-                this.saveableCanvas.getSaveData()
+                JSON.stringify(this.saveableCanvas.getSaveData())
               );
             }}
           >
@@ -95,7 +100,9 @@ class Demo extends Component {
             <input
               type="number"
               value={this.state.width}
-              onChange={e => this.setState({ width: e.target.value })}
+              onChange={e =>
+                this.setState({ width: parseInt(e.target.value, 10) })
+              }
             />
           </div>
           <div>
@@ -103,24 +110,48 @@ class Demo extends Component {
             <input
               type="number"
               value={this.state.height}
-              onChange={e => this.setState({ height: e.target.value })}
+              onChange={e =>
+                this.setState({ height: parseInt(e.target.value, 10) })
+              }
+            />
+          </div>
+          <div>
+            <label>Brush-Radius:</label>
+            <input
+              type="number"
+              value={this.state.brushRadius}
+              onChange={e =>
+                this.setState({ brushRadius: parseInt(e.target.value, 10) })
+              }
+            />
+          </div>
+          <div>
+            <label>Lazy-Radius:</label>
+            <input
+              type="number"
+              value={this.state.lazyRadius}
+              onChange={e =>
+                this.setState({ lazyRadius: parseInt(e.target.value, 10) })
+              }
             />
           </div>
         </div>
         <CanvasDraw
           ref={canvasDraw => (this.saveableCanvas = canvasDraw)}
           brushColor={this.state.color}
+          brushRadius={this.state.brushRadius}
+          lazyRadius={this.state.lazyRadius}
           canvasWidth={this.state.width}
           canvasHeight={this.state.height}
         />
         <p>
-          The following is a disabled canvas that we use to load & show your
+          The following is a disabled canvas with a hidden grid that we use to load & show your
           saved drawing.
         </p>
         <button
           onClick={() => {
             this.loadableCanvas.loadSaveData(
-              localStorage.getItem("savedDrawing")
+              JSON.parse(localStorage.getItem("savedDrawing"))
             );
           }}
         >
@@ -128,6 +159,7 @@ class Demo extends Component {
         </button>
         <CanvasDraw
           disabled
+          hideGrid
           ref={canvasDraw => (this.loadableCanvas = canvasDraw)}
         />
         <p>
