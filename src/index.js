@@ -60,15 +60,6 @@ export default class extends PureComponent {
 
     this.catenary = new Catenary();
 
-    this.lazy = new LazyBrush({
-      radius: props.lazyRadius,
-      enabled: true,
-      initialPoint: {
-        x: window.innerWidth / 2,
-        y: window.innerHeight / 2
-      }
-    });
-
     this.points = [];
     this.lines = [];
 
@@ -83,6 +74,15 @@ export default class extends PureComponent {
   }
 
   componentDidMount() {
+    this.lazy = new LazyBrush({
+      radius: this.props.lazyRadius,
+      enabled: true,
+      initialPoint: {
+        x: window.innerWidth / 2,
+        y: window.innerHeight / 2
+      }
+    });
+
     const observeCanvas = new ResizeObserver((entries, observer) =>
       this.handleCanvasResize(entries, observer)
     );
