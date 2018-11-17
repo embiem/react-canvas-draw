@@ -9,8 +9,8 @@ class Demo extends Component {
     color: "#ffc600",
     width: 400,
     height: 400,
-    brushRadius: 12,
-    lazyRadius: 30
+    brushRadius: 10,
+    lazyRadius: 20
   };
   componentDidMount() {
     // let's change the color randomly every 2 seconds. fun!

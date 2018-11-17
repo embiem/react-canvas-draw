@@ -40,8 +40,8 @@ const canvasTypes = [
 export default class extends PureComponent {
   static defaultProps = {
     loadTimeOffset: 5,
-    lazyRadius: 30,
-    brushRadius: 12,
+    lazyRadius: 20,
+    brushRadius: 10,
     brushColor: "#444",
     catenaryColor: "#0a0302",
     gridColor: "rgba(150,150,150,0.17)",
@@ -68,20 +68,19 @@ export default class extends PureComponent {
     this.isDrawing = false;
     this.isPressing = false;
 
-    this.chainLength = props.lazyRadius;
-
     this.dpi = 1;
   }
 
   componentDidMount() {
     this.lazy = new LazyBrush({
-      radius: this.props.lazyRadius,
+      radius: this.props.lazyRadius * window.devicePixelRatio,
       enabled: true,
       initialPoint: {
         x: window.innerWidth / 2,
         y: window.innerHeight / 2
       }
     });
+    this.chainLength = this.props.lazyRadius * window.devicePixelRatio;
 
     const observeCanvas = new ResizeObserver((entries, observer) =>
       this.handleCanvasResize(entries, observer)
@@ -111,8 +110,8 @@ export default class extends PureComponent {
   componentDidUpdate(prevProps) {
     if (prevProps.lazyRadius !== this.props.lazyRadius) {
       // Set new lazyRadius values
-      this.chainLength = this.props.lazyRadius;
-      this.lazy.setRadius(this.props.lazyRadius);
+      this.chainLength = this.props.lazyRadius * window.devicePixelRatio;
+      this.lazy.setRadius(this.props.lazyRadius * window.devicePixelRatio);
     }
 
     if (JSON.stringify(prevProps) !== JSON.stringify(this.props)) {
@@ -220,7 +219,7 @@ export default class extends PureComponent {
 
   handleTouchStart = e => {
     const { x, y } = this.getPointerPos(e);
-    this.lazy.update({ x: x, y: y }, { both: true });
+    this.lazy.update({ x, y }, { both: true });
     this.handleMouseDown(e);
 
     this.mouseHasMoved = true;
@@ -262,10 +261,10 @@ export default class extends PureComponent {
 
     for (const entry of entries) {
       const { width, height } = entry.contentRect;
-      this.setCanvasSize(this.canvas.interface, width, height, 1.25);
+      this.setCanvasSize(this.canvas.interface, width, height, 1);
       this.setCanvasSize(this.canvas.drawing, width, height, 1);
       this.setCanvasSize(this.canvas.temp, width, height, 1);
-      this.setCanvasSize(this.canvas.grid, width, height, 2);
+      this.setCanvasSize(this.canvas.grid, width, height, 1);
 
       this.drawGrid(this.ctx.grid);
       this.loop({ once: true });
