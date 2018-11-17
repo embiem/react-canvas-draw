@@ -525,11 +525,13 @@ export default class extends PureComponent {
               }}
               style={{ ...canvasStyle, zIndex }}
               onMouseDown={isInterface ? this.handleMouseDown : undefined}
-              onMouseUp={isInterface ? this.handleMouseUp : undefined}
               onMouseMove={isInterface ? this.handleMouseMove : undefined}
+              onMouseUp={isInterface ? this.handleMouseUp : undefined}
+              onMouseOut={isInterface ? this.handleMouseUp : undefined}
               onTouchStart={isInterface ? this.handleTouchStart : undefined}
-              onTouchEnd={isInterface ? this.handleTouchEnd : undefined}
               onTouchMove={isInterface ? this.handleTouchMove : undefined}
+              onTouchEnd={isInterface ? this.handleTouchEnd : undefined}
+              onTouchCancel={isInterface ? this.handleTouchEnd : undefined}
             />
           );
         })}
