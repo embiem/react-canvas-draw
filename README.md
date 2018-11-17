@@ -6,7 +6,7 @@
 
 [![Coveralls][coveralls-badge]][coveralls]
 
-> A simple yet powerful canvas-drawing component for React ([Demo](https://mbeierl.github.io/react-canvas-draw/)).
+> A simple yet powerful canvas-drawing component for React ([Demo](https://embiem.github.io/react-canvas-draw/)).
 
 ## Installation
 
@@ -32,11 +32,11 @@ import CanvasDraw from "react-canvas-draw";
 ReactDOM.render(<CanvasDraw />, document.getElementById("root"));
 ```
 
-For more examples, like saving and loading a drawing ==> look into the [`/demo/src` folder](https://github.com/mBeierl/react-canvas-draw/tree/master/demo/src).
+For more examples, like saving and loading a drawing ==> look into the [`/demo/src` folder](https://github.com/embiem/react-canvas-draw/tree/master/demo/src).
 
 ### Props
 
-These are the defaultProps of CanvasDraw. You can pass along any of these props to customize the CanvasDraw component. Examples of how to use the props are also shown in the [`/demo/src` folder](https://github.com/mBeierl/react-canvas-draw/tree/master/demo/src).
+These are the defaultProps of CanvasDraw. You can pass along any of these props to customize the CanvasDraw component. Examples of how to use the props are also shown in the [`/demo/src` folder](https://github.com/embiem/react-canvas-draw/tree/master/demo/src).
 
 ```javascript
   static defaultProps = {
@@ -81,11 +81,11 @@ I borrowed a lot of the logic and actually used lazy-brush during the push to v1
 
 ## License
 
-MIT, see [LICENSE](https://github.com/mBeierl/react-canvas-draw/blob/master/LICENSE) for details.
+MIT, see [LICENSE](https://github.com/embiem/react-canvas-draw/blob/master/LICENSE) for details.
 
-[build-badge]: https://img.shields.io/travis/mBeierl/react-canvas-draw/master.png?style=flat-square
-[build]: https://travis-ci.org/mBeierl/react-canvas-draw
+[build-badge]: https://img.shields.io/travis/embiem/react-canvas-draw/master.png?style=flat-square
+[build]: https://travis-ci.org/embiem/react-canvas-draw
 [npm-badge]: https://img.shields.io/npm/v/react-canvas-draw.png?style=flat-square
 [npm]: https://www.npmjs.org/package/react-canvas-draw
-[coveralls-badge]: https://img.shields.io/coveralls/mBeierl/react-canvas-draw/master.png?style=flat-square
-[coveralls]: https://coveralls.io/github/mBeierl/react-canvas-draw
+[coveralls-badge]: https://img.shields.io/coveralls/embiem/react-canvas-draw/master.png?style=flat-square
+[coveralls]: https://coveralls.io/github/embiem/react-canvas-draw
