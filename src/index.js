@@ -67,8 +67,6 @@ export default class extends PureComponent {
     this.valuesChanged = true;
     this.isDrawing = false;
     this.isPressing = false;
-
-    this.dpi = 1;
   }
 
   componentDidMount() {
@@ -257,33 +255,23 @@ export default class extends PureComponent {
   };
 
   handleCanvasResize = (entries, observer) => {
-    this.dpi = window.devicePixelRatio;
-
     for (const entry of entries) {
       const { width, height } = entry.contentRect;
-      this.setCanvasSize(this.canvas.interface, width, height, 1);
-      this.setCanvasSize(this.canvas.drawing, width, height, 1);
-      this.setCanvasSize(this.canvas.temp, width, height, 1);
-      this.setCanvasSize(this.canvas.grid, width, height, 1);
+      this.setCanvasSize(this.canvas.interface, width, height);
+      this.setCanvasSize(this.canvas.drawing, width, height);
+      this.setCanvasSize(this.canvas.temp, width, height);
+      this.setCanvasSize(this.canvas.grid, width, height);
 
       this.drawGrid(this.ctx.grid);
       this.loop({ once: true });
     }
   };
 
-  setCanvasSize = (canvas, width, height, maxDpi = 4) => {
-    let dpi = this.dpi;
-
-    // reduce canvas size for hidpi desktop screens
-    if (window.innerWidth > 1024) {
-      dpi = Math.min(this.dpi, maxDpi);
-    }
-
-    canvas.width = width * dpi;
-    canvas.height = height * dpi;
+  setCanvasSize = (canvas, width, height) => {
+    canvas.width = width;
+    canvas.height = height;
     canvas.style.width = width;
     canvas.style.height = height;
-    canvas.getContext("2d").scale(dpi, dpi);
   };
 
   getPointerPos = e => {
@@ -383,9 +371,8 @@ export default class extends PureComponent {
     // Reset points array
     this.points.length = 0;
 
-    const dpi = window.innerWidth > 1024 ? 1 : window.devicePixelRatio;
-    const width = this.canvas.temp.width / dpi;
-    const height = this.canvas.temp.height / dpi;
+    const width = this.canvas.temp.width;
+    const height = this.canvas.temp.height;
 
     // Copy the line to the drawing canvas
     this.ctx.drawing.drawImage(this.canvas.temp, 0, 0, width, height);
