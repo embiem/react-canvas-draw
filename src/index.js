@@ -103,13 +103,13 @@ export default class extends PureComponent {
       );
       this.mouseHasMoved = true;
       this.valuesChanged = true;
-      this.clearCanvas();
+      this.clear();
     }, 100);
   }
 
   componentDidUpdate(prevProps) {
     if (prevProps.lazyRadius !== this.props.lazyRadius) {
-      // Set new values
+      // Set new lazyRadius values
       this.chainLength = this.props.lazyRadius;
       this.lazy.setRadius(this.props.lazyRadius);
     }
@@ -123,15 +123,25 @@ export default class extends PureComponent {
   drawImage = () => {
     if (!this.props.imgSrc) return;
 
+    // Load the image
     this.image = new Image();
     this.image.src = this.props.imgSrc;
+
+    // Draw the image once loaded
     this.image.onload = () =>
       drawImage({ ctx: this.ctx.grid, img: this.image });
   };
 
+  undo = () => {
+    const lines = this.lines.slice(0, -1);
+    this.clear();
+    this.simulateDrawingLines({ lines, immediate: true });
+  };
+
   getSaveData = () => {
+    // Construct and return the saveData object
     const saveData = {
-      lines: this.lines,
+      lines: [...this.lines],
       width: this.props.canvasWidth,
       height: this.props.canvasHeight
     };
@@ -149,59 +159,60 @@ export default class extends PureComponent {
       throw new Error("saveData.lines needs to be an array!");
     }
 
-    this.clearCanvas();
+    this.clear();
 
     if (
       width === this.props.canvasWidth &&
       height === this.props.canvasHeight
     ) {
-      this.lines = lines;
+      this.simulateDrawingLines({
+        lines,
+        immediate
+      });
     } else {
       // we need to rescale the lines based on saved & current dimensions
       const scaleX = this.props.canvasWidth / width;
       const scaleY = this.props.canvasHeight / height;
       const scaleAvg = (scaleX + scaleY) / 2;
 
-      this.lines = lines.map(line => ({
-        ...line,
-        points: line.points.map(p => ({
-          x: p.x * scaleX,
-          y: p.y * scaleY
+      this.simulateDrawingLines({
+        lines: lines.map(line => ({
+          ...line,
+          points: line.points.map(p => ({
+            x: p.x * scaleX,
+            y: p.y * scaleY
+          })),
+          brushRadius: line.brushRadius * scaleAvg
         })),
-        brushRadius: line.brushRadius * scaleAvg
-      }));
+        immediate
+      });
     }
+  };
 
+  simulateDrawingLines = ({ lines, immediate }) => {
     // Simulate live-drawing of the loaded lines
-    let curTime = 0,
-      timeoutGap = immediate ? 0 : this.props.loadTimeOffset;
+    let curTime = 0;
+    let timeoutGap = immediate ? 0 : this.props.loadTimeOffset;
 
-    this.lines.forEach(line => {
-      curTime += timeoutGap;
-      window.setTimeout(() => {
-        this.handleMouseDown(new Event(""));
-      }, curTime);
+    lines.forEach(line => {
+      const { points, brushColor, brushRadius } = line;
 
-      line.points.forEach(p => {
+      for (let i = 1; i < points.length; i++) {
         curTime += timeoutGap;
         window.setTimeout(() => {
-          // Add new point
-          this.points.push(p);
-
-          if (this.points.length > 1) {
-            // Draw current points
-            this.drawPoints({
-              points: this.points,
-              brushColor: line.brushColor,
-              brushRadius: line.brushRadius
-            });
-          }
+          this.drawPoints({
+            points: points.slice(0, i + 1),
+            brushColor,
+            brushRadius
+          });
         }, curTime);
-      });
+      }
 
       curTime += timeoutGap;
       window.setTimeout(() => {
-        this.handleMouseUp(new Event(""));
+        // Save this line with its props instead of this.props
+        this.points = points;
+        this.saveLine({ brushColor, brushRadius });
       }, curTime);
     });
   };
@@ -242,22 +253,7 @@ export default class extends PureComponent {
     this.isDrawing = false;
     this.isPressing = false;
 
-    // Save as new line
-    this.lines.push({
-      points: [...this.points],
-      brushColor: this.props.brushColor,
-      brushRadius: this.props.brushRadius
-    });
-
-    // Reset points array
-    this.points.length = 0;
-
-    const dpi = window.innerWidth > 1024 ? 1 : window.devicePixelRatio;
-    const width = this.canvas.temp.width / dpi;
-    const height = this.canvas.temp.height / dpi;
-
-    this.ctx.drawing.drawImage(this.canvas.temp, 0, 0, width, height);
-    this.ctx.temp.clearRect(0, 0, width, height);
+    this.saveLine();
   };
 
   handleCanvasResize = (entries, observer) => {
@@ -374,7 +370,30 @@ export default class extends PureComponent {
     this.ctx.temp.stroke();
   };
 
-  clearCanvas = () => {
+  saveLine = ({ brushColor, brushRadius } = {}) => {
+    // Save as new line
+    this.lines.push({
+      points: [...this.points],
+      brushColor: brushColor || this.props.brushColor,
+      brushRadius: brushRadius || this.props.brushRadius
+    });
+
+    // Reset points array
+    this.points.length = 0;
+
+    const dpi = window.innerWidth > 1024 ? 1 : window.devicePixelRatio;
+    const width = this.canvas.temp.width / dpi;
+    const height = this.canvas.temp.height / dpi;
+
+    // Copy the line to the drawing canvas
+    this.ctx.drawing.drawImage(this.canvas.temp, 0, 0, width, height);
+
+    // Clear the temporary line-drawing canvas
+    this.ctx.temp.clearRect(0, 0, width, height);
+  };
+
+  clear = () => {
+    this.lines.length = 0;
     this.valuesChanged = true;
     this.ctx.drawing.clearRect(
       0,
