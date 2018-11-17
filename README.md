@@ -58,8 +58,8 @@ These are the defaultProps of CanvasDraw. You can pass along any of these props 
 
 Useful functions that you can call, e.g. when having a reference to this component:
 
-- `getSaveData()` returns the drawing's save-data as stringified JSON
-- `loadSaveData(saveData: Object, immediate: Boolean)` loads a previously saved drawing using the saveData string, as well as an optional boolean flag to load it immediately, instead of live-drawing it.
+- `getSaveData()` returns the drawing's save-data as a stringified object
+- `loadSaveData(saveData: String, immediate: Boolean)` loads a previously saved drawing using the saveData string, as well as an optional boolean flag to load it immediately, instead of live-drawing it.
 - `clear()` clears the canvas completely
 - `undo()` removes the latest change to the drawing. This includes everything drawn since the last MouseDown event.
 

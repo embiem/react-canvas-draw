@@ -75,7 +75,7 @@ class Demo extends Component {
             onClick={() => {
               localStorage.setItem(
                 "savedDrawing",
-                JSON.stringify(this.saveableCanvas.getSaveData())
+                this.saveableCanvas.getSaveData()
               );
             }}
           >
@@ -145,13 +145,13 @@ class Demo extends Component {
           canvasHeight={this.state.height}
         />
         <p>
-          The following is a disabled canvas with a hidden grid that we use to load & show your
-          saved drawing.
+          The following is a disabled canvas with a hidden grid that we use to
+          load & show your saved drawing.
         </p>
         <button
           onClick={() => {
             this.loadableCanvas.loadSaveData(
-              JSON.parse(localStorage.getItem("savedDrawing"))
+              localStorage.getItem("savedDrawing")
             );
           }}
         >

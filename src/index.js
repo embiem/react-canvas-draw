@@ -137,21 +137,20 @@ export default class extends PureComponent {
   };
 
   getSaveData = () => {
-    // Construct and return the saveData object
-    const saveData = {
-      lines: [...this.lines],
+    // Construct and return the stringified saveData object
+    return JSON.stringify({
+      lines: this.lines,
       width: this.props.canvasWidth,
       height: this.props.canvasHeight
-    };
-    return saveData;
+    });
   };
 
   loadSaveData = (saveData, immediate) => {
-    if (typeof saveData !== "object") {
-      throw new Error("saveData needs to be of type object!");
+    if (typeof saveData !== "string") {
+      throw new Error("saveData needs to be of type string!");
     }
 
-    const { lines, width, height } = saveData;
+    const { lines, width, height } = JSON.parse(saveData);
 
     if (!lines || typeof lines.push !== "function") {
       throw new Error("saveData.lines needs to be an array!");
