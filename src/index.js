@@ -372,6 +372,8 @@ export default class extends PureComponent {
   };
 
   saveLine = ({ brushColor, brushRadius } = {}) => {
+    if (this.points.length < 2) return;
+
     // Save as new line
     this.lines.push({
       points: [...this.points],
@@ -394,7 +396,7 @@ export default class extends PureComponent {
   };
 
   clear = () => {
-    this.lines.length = 0;
+    this.lines = [];
     this.valuesChanged = true;
     this.ctx.drawing.clearRect(
       0,
