@@ -44,6 +44,7 @@ These are the defaultProps of CanvasDraw. You can pass along any of these props 
     lazyRadius: 30,
     brushRadius: 12,
     brushColor: "#444",
+    catenaryColor: "#0a0302",
     gridColor: "rgba(150,150,150,0.17)",
     hideGrid: false,
     canvasWidth: 400,

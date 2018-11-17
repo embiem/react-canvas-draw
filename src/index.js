@@ -43,6 +43,7 @@ export default class extends PureComponent {
     lazyRadius: 30,
     brushRadius: 12,
     brushColor: "#444",
+    catenaryColor: "#0a0302",
     gridColor: "rgba(150,150,150,0.17)",
     hideGrid: false,
     canvasWidth: 400,
@@ -467,7 +468,7 @@ export default class extends PureComponent {
 
     // Draw mouse point (the one directly at the cursor)
     ctx.beginPath();
-    ctx.fillStyle = "#0a0302";
+    ctx.fillStyle = this.props.catenaryColor;
     ctx.arc(pointer.x, pointer.y, 4, 0, Math.PI * 2, true);
     ctx.fill();
 
@@ -477,7 +478,7 @@ export default class extends PureComponent {
       ctx.lineWidth = 2;
       ctx.lineCap = "round";
       ctx.setLineDash([2, 4]);
-      ctx.strokeStyle = "#0a0302";
+      ctx.strokeStyle = this.props.catenaryColor;
       this.catenary.drawToCanvas(
         this.ctx.interface,
         brush,
@@ -489,7 +490,7 @@ export default class extends PureComponent {
 
     // Draw brush point (the one in the middle of the brush preview)
     ctx.beginPath();
-    ctx.fillStyle = "#222";
+    ctx.fillStyle = this.props.catenaryColor;
     ctx.arc(brush.x, brush.y, 2, 0, Math.PI * 2, true);
     ctx.fill();
   };
