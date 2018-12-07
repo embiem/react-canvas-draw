@@ -10,7 +10,7 @@ class Demo extends Component {
     width: 400,
     height: 400,
     brushRadius: 10,
-    lazyRadius: 20
+    lazyRadius: 12
   };
   componentDidMount() {
     // let's change the color randomly every 2 seconds. fun!
@@ -161,6 +161,7 @@ class Demo extends Component {
           disabled
           hideGrid
           ref={canvasDraw => (this.loadableCanvas = canvasDraw)}
+          saveData={localStorage.getItem("savedDrawing")}
         />
         <p>
           The saving & loading also takes different dimensions into account.

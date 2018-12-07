@@ -1,4 +1,5 @@
 import React, { PureComponent } from "react";
+import PropTypes from "prop-types"
 import { LazyBrush } from "lazy-brush";
 import { Catenary } from "catenary-curve";
 
@@ -38,9 +39,24 @@ const canvasTypes = [
 ];
 
 export default class extends PureComponent {
+  static propTypes = {
+    loadTimeOffset: PropTypes.number,
+    lazyRadius: PropTypes.number,
+    brushRadius: PropTypes.number,
+    brushColor: PropTypes.string,
+    catenaryColor: PropTypes.string,
+    gridColor: PropTypes.string,
+    hideGrid: PropTypes.bool,
+    canvasWidth: PropTypes.number,
+    canvasHeight: PropTypes.number,
+    disabled: PropTypes.bool,
+    imgSrc: PropTypes.string,
+    saveData: PropTypes.object
+  }
+
   static defaultProps = {
     loadTimeOffset: 5,
-    lazyRadius: 20,
+    lazyRadius: 12,
     brushRadius: 10,
     brushColor: "#444",
     catenaryColor: "#0a0302",
@@ -49,7 +65,8 @@ export default class extends PureComponent {
     canvasWidth: 400,
     canvasHeight: 400,
     disabled: false,
-    imgSrc: ""
+    imgSrc: "",
+    saveData: null
   };
 
   constructor(props) {
@@ -102,6 +119,11 @@ export default class extends PureComponent {
       this.mouseHasMoved = true;
       this.valuesChanged = true;
       this.clear();
+
+      // Load saveData from prop if it exists
+      if (this.props.saveData) {
+        this.loadSaveData(this.props.saveData)
+      }
     }, 100);
   }
 
@@ -188,6 +210,7 @@ export default class extends PureComponent {
 
   simulateDrawingLines = ({ lines, immediate }) => {
     // Simulate live-drawing of the loaded lines
+    // TODO use a generator
     let curTime = 0;
     let timeoutGap = immediate ? 0 : this.props.loadTimeOffset;
 
