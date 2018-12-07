@@ -24,6 +24,14 @@ class Demo extends Component {
     return (
       <div>
         <h1>React Canvas Draw</h1>
+        <iframe
+          title="GitHub link"
+          src="https://ghbtns.com/github-btn.html?user=embiem&repo=react-canvas-draw&type=star&count=true"
+          frameborder="0"
+          scrolling="0"
+          width="160px"
+          height="30px"
+        />
         <h2>default</h2>
         <p>
           This is a simple <span>{`<CanvasDraw />`}</span> component with
@@ -155,7 +163,9 @@ class Demo extends Component {
             );
           }}
         >
-          Load what you saved previously into the following canvas. Either by calling `loadSaveData()` on the component's reference or passing it the `saveData` prop:
+          Load what you saved previously into the following canvas. Either by
+          calling `loadSaveData()` on the component's reference or passing it
+          the `saveData` prop:
         </button>
         <CanvasDraw
           disabled
