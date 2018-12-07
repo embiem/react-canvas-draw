@@ -50,7 +50,9 @@ These are the defaultProps of CanvasDraw. You can pass along any of these props 
     canvasWidth: 400,
     canvasHeight: 400,
     disabled: false,
-    imgSrc: ""
+    imgSrc: "",
+    saveData: null,
+    immediateLoading: false
   };
 ```
 

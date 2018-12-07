@@ -1,5 +1,5 @@
 import React, { PureComponent } from "react";
-import PropTypes from "prop-types"
+import PropTypes from "prop-types";
 import { LazyBrush } from "lazy-brush";
 import { Catenary } from "catenary-curve";
 
@@ -51,8 +51,9 @@ export default class extends PureComponent {
     canvasHeight: PropTypes.number,
     disabled: PropTypes.bool,
     imgSrc: PropTypes.string,
-    saveData: PropTypes.object
-  }
+    saveData: PropTypes.string,
+    immediateLoading: PropTypes.bool
+  };
 
   static defaultProps = {
     loadTimeOffset: 5,
@@ -66,7 +67,8 @@ export default class extends PureComponent {
     canvasHeight: 400,
     disabled: false,
     imgSrc: "",
-    saveData: null
+    saveData: "",
+    immediateLoading: false
   };
 
   constructor(props) {
@@ -122,7 +124,7 @@ export default class extends PureComponent {
 
       // Load saveData from prop if it exists
       if (this.props.saveData) {
-        this.loadSaveData(this.props.saveData)
+        this.loadSaveData(this.props.saveData);
       }
     }, 100);
   }
@@ -132,6 +134,10 @@ export default class extends PureComponent {
       // Set new lazyRadius values
       this.chainLength = this.props.lazyRadius * window.devicePixelRatio;
       this.lazy.setRadius(this.props.lazyRadius * window.devicePixelRatio);
+    }
+
+    if (prevProps.saveData !== this.props.saveData) {
+      this.loadSaveData(this.props.saveData);
     }
 
     if (JSON.stringify(prevProps) !== JSON.stringify(this.props)) {
@@ -167,7 +173,7 @@ export default class extends PureComponent {
     });
   };
 
-  loadSaveData = (saveData, immediate) => {
+  loadSaveData = (saveData, immediate = this.props.immediateLoading) => {
     if (typeof saveData !== "string") {
       throw new Error("saveData needs to be of type string!");
     }

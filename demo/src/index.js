@@ -155,7 +155,7 @@ class Demo extends Component {
             );
           }}
         >
-          Load what you saved previously into the following canvas:
+          Load what you saved previously into the following canvas. Either by calling `loadSaveData()` on the component's reference or passing it the `saveData` prop:
         </button>
         <CanvasDraw
           disabled
