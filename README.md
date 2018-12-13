@@ -8,6 +8,8 @@
 
 > A simple yet powerful canvas-drawing component for React ([Demo](https://embiem.github.io/react-canvas-draw/)).
 
+[![Edit 6lv410914w](https://codesandbox.io/static/img/play-codesandbox.svg)](https://codesandbox.io/s/6lv410914w)
+
 ## Installation
 
 Install via NPM:
