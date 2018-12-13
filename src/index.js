@@ -516,6 +516,7 @@ export default class extends PureComponent {
   render() {
     return (
       <div
+        className={this.props.className}
         style={{
           display: "block",
           background: "#fff",
