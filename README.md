@@ -8,7 +8,7 @@
 
 [![Travis][build-badge]][build] [![Coveralls][coveralls-badge]][coveralls] [![npm package][npm-badge]][npm] [![downloads][downloads-badge]][npmtrends] [![MIT License][license-badge]][license]
 
-[![All Contributors](https://img.shields.io/badge/all_contributors-1-orange.svg?style=flat-square)](#contributors) [![PRs Welcome][prs-badge]][prs]
+[![All Contributors](https://img.shields.io/badge/all_contributors-2-orange.svg?style=flat-square)](#contributors) [![PRs Welcome][prs-badge]][prs]
 
 [![Watch on GitHub][github-watch-badge]][github-watch] [![Star on GitHub][github-star-badge]][github-star] [![Tweet][twitter-badge]][twitter]
 
@@ -93,9 +93,8 @@ Thanks goes to these wonderful people ([emoji key](https://github.com/kentcdodds
 
 <!-- ALL-CONTRIBUTORS-LIST:START - Do not remove or modify this section -->
 <!-- prettier-ignore -->
-| [<img src="https://avatars3.githubusercontent.com/u/3866457?v=4" width="100px;"/><br /><sub><b>Martin Beierling-Mutz</b></sub>](https://embiem.me)<br />[💻](https://github.com/embiem/react-canvas-draw/commits?author=embiem "Code") [📖](https://github.com/embiem/react-canvas-draw/commits?author=embiem "Documentation") [💡](#example-embiem "Examples") [🤔](#ideas-embiem "Ideas, Planning, & Feedback") |
-| :---: |
-
+| [<img src="https://avatars3.githubusercontent.com/u/3866457?v=4" width="100px;"/><br /><sub><b>Martin Beierling-Mutz</b></sub>](https://embiem.me)<br />[💻](https://github.com/embiem/react-canvas-draw/commits?author=embiem "Code") [📖](https://github.com/embiem/react-canvas-draw/commits?author=embiem "Documentation") [💡](#example-embiem "Examples") [🤔](#ideas-embiem "Ideas, Planning, & Feedback") | [<img src="https://avatars0.githubusercontent.com/u/4155003?v=4" width="100px;"/><br /><sub><b>Jan Hug</b></sub>](http://www.janhug.info)<br />[🤔](#ideas-dulnan "Ideas, Planning, & Feedback") |
+| :---: | :---: |
 <!-- ALL-CONTRIBUTORS-LIST:END -->
 
 This project follows the [all-contributors](https://github.com/kentcdodds/all-contributors) specification. Contributions of any kind welcome!
