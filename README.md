@@ -120,5 +120,5 @@ MIT, see [LICENSE](https://github.com/embiem/react-canvas-draw/blob/master/LICEN
 [github-watch]: https://github.com/embiem/react-canvas-draw/watchers
 [github-star-badge]: https://img.shields.io/github/stars/embiem/react-canvas-draw.svg?style=social
 [github-star]: https://github.com/embiem/react-canvas-draw/stargazers
-[twitter]: https://twitter.com/intent/tweet?text=Check%20out%20react-canvas-draw%20by%20%40embiem%20https%3A%2F%2Fgithub.com%2Fembiem%2Freact-canvas-draw%20%F0%9F%91%8D
+[twitter]: https://twitter.com/intent/tweet?text=Check%20out%20react-canvas-draw%20by%20%40em_bi_em%20https%3A%2F%2Fgithub.com%2Fembiem%2Freact-canvas-draw%20%F0%9F%91%8D
 [twitter-badge]: https://img.shields.io/twitter/url/https/github.com/embiem/react-canvas-draw.svg?style=social
