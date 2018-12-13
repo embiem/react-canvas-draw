@@ -1,0 +1,25 @@
+{
+  "projectName": "react-canvas-draw",
+  "projectOwner": "embiem",
+  "repoType": "github",
+  "repoHost": "https://github.com",
+  "files": [
+    "README.md"
+  ],
+  "imageSize": 100,
+  "commit": true,
+  "contributors": [
+    {
+      "login": "embiem",
+      "name": "Martin Beierling-Mutz",
+      "avatar_url": "https://avatars3.githubusercontent.com/u/3866457?v=4",
+      "profile": "https://embiem.me",
+      "contributions": [
+        "code",
+        "doc",
+        "example",
+        "ideas"
+      ]
+    }
+  ]
+}

@@ -1,12 +1,34 @@
+<div align="center">
+<h1>React Canvas Draw</h1>
+
+<p>> A simple yet powerful canvas-drawing component for React ([Demo](https://embiem.github.io/react-canvas-draw/)).</p>
+</div>
+
+<hr />
+
 # React Canvas Draw
 
 [![Travis][build-badge]][build]
 
-[![npm package][npm-badge]][npm]
-
 [![Coveralls][coveralls-badge]][coveralls]
 
-> A simple yet powerful canvas-drawing component for React ([Demo](https://embiem.github.io/react-canvas-draw/)).
+[![npm package][npm-badge]][npm]
+
+[![version][version-badge]][package]
+
+[![downloads][downloads-badge]][npmtrends]
+
+[![MIT License][license-badge]][license]
+
+[![All Contributors](https://img.shields.io/badge/all_contributors-1-orange.svg?style=flat-square)](#contributors)
+
+[![PRs Welcome][prs-badge]][prs]
+
+[![Watch on GitHub][github-watch-badge]][github-watch]
+
+[![Star on GitHub][github-star-badge]][github-star]
+
+[![Tweet][twitter-badge]][twitter]
 
 [![Edit 6lv410914w](https://codesandbox.io/static/img/play-codesandbox.svg)](https://codesandbox.io/s/6lv410914w)
 
@@ -83,6 +105,19 @@ The [lazy-brush](https://github.com/dulnan/lazy-brush) project as well as its de
 
 I borrowed a lot of the logic and actually used lazy-brush during the push to v1 of react-canvas-draw. Without it, react-canvas-draw would most likely still be pre v1 and wouldn't feel as good.
 
+## Contributors
+
+Thanks goes to these wonderful people ([emoji key](https://github.com/kentcdodds/all-contributors#emoji-key)):
+
+<!-- ALL-CONTRIBUTORS-LIST:START - Do not remove or modify this section -->
+<!-- prettier-ignore -->
+| [<img src="https://avatars3.githubusercontent.com/u/3866457?v=4" width="100px;"/><br /><sub><b>Martin Beierling-Mutz</b></sub>](https://embiem.me)<br />[💻](https://github.com/embiem/react-canvas-draw/commits?author=embiem "Code") [📖](https://github.com/embiem/react-canvas-draw/commits?author=embiem "Documentation") [💡](#example-embiem "Examples") [🤔](#ideas-embiem "Ideas, Planning, & Feedback") |
+| :---: |
+<!-- ALL-CONTRIBUTORS-LIST:END -->
+
+This project follows the [all-contributors](https://github.com/kentcdodds/all-contributors) specification. Contributions of any kind welcome!
+
+
 ## License
 
 MIT, see [LICENSE](https://github.com/embiem/react-canvas-draw/blob/master/LICENSE) for details.
@@ -93,3 +128,24 @@ MIT, see [LICENSE](https://github.com/embiem/react-canvas-draw/blob/master/LICEN
 [npm]: https://www.npmjs.org/package/react-canvas-draw
 [coveralls-badge]: https://img.shields.io/coveralls/embiem/react-canvas-draw/master.png?style=flat-square
 [coveralls]: https://coveralls.io/github/embiem/react-canvas-draw
+[npm]: https://www.npmjs.com/
+[node]: https://nodejs.org
+[version-badge]: https://img.shields.io/npm/v/react-canvas-draw.svg?style=flat-square
+[package]: https://www.npmjs.com/package/react-canvas-draw
+[downloads-badge]: https://img.shields.io/npm/dm/react-canvas-draw.svg?style=flat-square
+[npmtrends]: http://www.npmtrends.com/react-canvas-draw
+[license-badge]: https://img.shields.io/npm/l/react-canvas-draw.svg?style=flat-square
+[license]: https://github.com/embiem/react-canvas-draw/blob/master/LICENSE
+[prs-badge]: https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=flat-square
+[prs]: http://makeapullrequest.com
+[donate-badge]: https://img.shields.io/badge/$-support-green.svg?style=flat-square
+[coc-badge]: https://img.shields.io/badge/code%20of-conduct-ff69b4.svg?style=flat-square
+[coc]: https://github.com/embiem/react-canvas-draw/blob/master/other/CODE_OF_CONDUCT.md
+[github-watch-badge]: https://img.shields.io/github/watchers/embiem/react-canvas-draw.svg?style=social
+[github-watch]: https://github.com/embiem/react-canvas-draw/watchers
+[github-star-badge]: https://img.shields.io/github/stars/embiem/react-canvas-draw.svg?style=social
+[github-star]: https://github.com/embiem/react-canvas-draw/stargazers
+[twitter]: https://twitter.com/intent/tweet?text=Check%20out%20react-canvas-draw%20by%20%40embiem%20https%3A%2F%2Fgithub.com%2Fembiem%2Freact-canvas-draw%20%F0%9F%91%8D
+[twitter-badge]: https://img.shields.io/twitter/url/https/github.com/embiem/react-canvas-draw.svg?style=social
+[emojis]: https://github.com/embiem/all-contributors#emoji-key
+[all-contributors]: https://github.com/embiem/all-contributors
