@@ -1,6 +1,6 @@
 {
   "name": "react-canvas-draw",
-  "version": "1.0.0-alpha.10",
+  "version": "1.0.0-alpha.11",
   "description": "A simple yet powerful canvas-drawing component for React.",
   "main": "lib/index.js",
   "module": "es/index.js",
@@ -49,11 +49,11 @@
     "name": "Martin Beierling",
     "email": "mbeierling@gmail.com"
   },
-  "homepage": "https://mbeierl.github.io/react-canvas-draw/",
+  "homepage": "https://embiem.github.io/react-canvas-draw/",
   "license": "MIT",
-  "repository": "https://github.com/mBeierl/react-canvas-draw",
+  "repository": "https://github.com/embiem/react-canvas-draw",
   "bugs": {
-    "url": "https://github.com/mBeierl/react-canvas-draw/issues"
+    "url": "https://github.com/embiem/react-canvas-draw/issues"
   },
   "keywords": [
     "react-component",
