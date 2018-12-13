@@ -17,7 +17,9 @@
     "test": "nwb test-react",
     "test:coverage": "nwb test-react --coverage",
     "test:watch": "nwb test-react --server",
-    "deploy": "npm run build && gh-pages -d demo/dist"
+    "deploy": "npm run build && gh-pages -d demo/dist",
+    "contributors:add": "all-contributors add",
+    "contributors:generate": "all-contributors generate"
   },
   "dependencies": {
     "catenary-curve": "^1.0.1",
@@ -29,6 +31,7 @@
     "react": "16.x"
   },
   "devDependencies": {
+    "all-contributors-cli": "^5.4.1",
     "babel-eslint": "^7.2.3",
     "css-loader": "^0.28.9",
     "enzyme": "^3.3.0",
