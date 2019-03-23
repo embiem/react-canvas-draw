@@ -33,7 +33,7 @@
   "devDependencies": {
     "all-contributors-cli": "^5.4.1",
     "babel-eslint": "^7.2.3",
-    "css-loader": "^0.28.9",
+    "css-loader": "^2.1.1",
     "enzyme": "^3.3.0",
     "enzyme-adapter-react-16": "^1.1.1",
     "eslint": "^4.1.1",
@@ -43,10 +43,10 @@
     "eslint-plugin-jsx-a11y": "^5.1.1",
     "eslint-plugin-react": "^7.1.0",
     "gh-pages": "^1.1.0",
-    "nwb": "0.21.x",
+    "nwb": "^0.23.0",
     "react": "^16.2.0",
     "react-dom": "^16.2.0",
-    "style-loader": "^0.19.1"
+    "style-loader": "^0.23.1"
   },
   "author": {
     "name": "Martin Beierling",
