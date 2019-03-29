@@ -51,6 +51,7 @@ export default class extends PureComponent {
     brushColor: PropTypes.string,
     catenaryColor: PropTypes.string,
     gridColor: PropTypes.string,
+    backgroundColor: PropTypes.string,
     hideGrid: PropTypes.bool,
     canvasWidth: dimensionsPropTypes,
     canvasHeight: dimensionsPropTypes,
@@ -67,6 +68,7 @@ export default class extends PureComponent {
     brushColor: "#444",
     catenaryColor: "#0a0302",
     gridColor: "rgba(150,150,150,0.17)",
+    backgroundColor: "#FFF",
     hideGrid: false,
     canvasWidth: 400,
     canvasHeight: 400,
@@ -528,7 +530,7 @@ export default class extends PureComponent {
         className={this.props.className}
         style={{
           display: "block",
-          background: "#fff",
+          background: this.props.backgroundColor,
           touchAction: "none",
           width: this.props.canvasWidth,
           height: this.props.canvasHeight,
