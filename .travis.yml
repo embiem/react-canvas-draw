@@ -13,6 +13,9 @@ branches:
 script:
   - yarn test
   - yarn build
+before_deploy:
+  - yarn
+  - yarn build
 deploy:
   provider: npm
   email: mbeierling@gmail.com
