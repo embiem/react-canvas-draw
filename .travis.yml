@@ -1,16 +1,22 @@
 sudo: false
-
 language: node_js
 node_js:
-  - 8
-
+- 8
 before_install:
-  - npm install codecov.io coveralls
-
+- npm install codecov.io coveralls
 after_success:
-  - cat ./coverage/lcov.info | ./node_modules/codecov.io/bin/codecov.io.js
-  - cat ./coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js
-
+- cat ./coverage/lcov.info | ./node_modules/codecov.io/bin/codecov.io.js
+- cat ./coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js
 branches:
   only:
-    - master
+  - master
+script:
+  - yarn test
+  - yarn build
+deploy:
+  provider: npm
+  email: mbeierling@gmail.com
+  api_key:
+    secure: ZX8j5xi2vhnsWm5BQeLpu9XZ3lwiVK7WH671BhanpwTdHqv1EQdXWXnU5f0qVEL0vNIpqFvSF7fyPby+rtZ36bl8bpvlx8Tqm8iKDI3PuRdp0kt5a3HdaFSedKQE/vx10CRRARs/jAYtv7wW+vVVK6HXE8tvW+OaNFxfsH27lLJvYZbxWSHtnw4cPrZG/U1A8axmkz9q7Yb/U0c50qnRPtU/SK1NlOuVJSaGvHh0KCu2Sv2Vey1J5CTZKrg98Z2viklo3e+5R3UxbTUJz78J4FXs4kabeLAFzNhf2OhD+vyH7xtnJyW5Jt3eT8yMWz40OJQNk5hWOzh1Lucgremyq29/lZtj0fmYwRGRAKpM1HEffCW4TPp+NKlsbkEz6HhbeshSgoGnDetPceIg5AiO3R4bqTpgxj1fcPmuymLne+25RIqF25dcVtrczwu9HmLyr9mGgZMBl5I8MlKTh1IwchT4kTSCMkvNKswxspzve0ncjYTss32zpvPC50cfzXcCNTY3LO0pg5JUPxGVZ7igrCcNmdHHFcXQ15wLM1LPd0W/J8nqBumAAQ2ocdCnG4I5aQ/IpbJmlS7sVJBf1lBX+qlBkJQQvGe/d9FEqelMw2I4CmMOOXPuLwqBoOFqmqH/B50JrFItYzEMee+yzl5LAXvnNCxizvas4A19N29Jl98=
+  on:
+    branch: master
