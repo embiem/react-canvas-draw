@@ -4,6 +4,7 @@ node_js:
 - 8
 before_install:
 - npm install codecov.io coveralls
+- npm install nwb
 after_success:
 - cat ./coverage/lcov.info | ./node_modules/codecov.io/bin/codecov.io.js
 - cat ./coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js
