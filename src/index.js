@@ -38,6 +38,11 @@ const canvasTypes = [
   }
 ];
 
+const dimensionsPropTypes = PropTypes.oneOfType([
+  PropTypes.number,
+  PropTypes.string
+]);
+
 export default class extends PureComponent {
   static propTypes = {
     loadTimeOffset: PropTypes.number,
@@ -48,8 +53,8 @@ export default class extends PureComponent {
     gridColor: PropTypes.string,
     backgroundColor: PropTypes.string,
     hideGrid: PropTypes.bool,
-    canvasWidth: PropTypes.number,
-    canvasHeight: PropTypes.number,
+    canvasWidth: dimensionsPropTypes,
+    canvasHeight: dimensionsPropTypes,
     disabled: PropTypes.bool,
     imgSrc: PropTypes.string,
     saveData: PropTypes.string,
@@ -101,10 +106,10 @@ export default class extends PureComponent {
     });
     this.chainLength = this.props.lazyRadius * window.devicePixelRatio;
 
-    const observeCanvas = new ResizeObserver((entries, observer) =>
+    this.canvasObserver = new ResizeObserver((entries, observer) =>
       this.handleCanvasResize(entries, observer)
     );
-    observeCanvas.observe(this.canvasContainer);
+    this.canvasObserver.observe(this.canvasContainer);
 
     this.drawImage();
     this.loop();
@@ -147,6 +152,10 @@ export default class extends PureComponent {
       this.valuesChanged = true;
     }
   }
+
+  componentWillUnmount = () => {
+    this.canvasObserver.unobserve(this.canvasContainer);
+  };
 
   drawImage = () => {
     if (!this.props.imgSrc) return;
