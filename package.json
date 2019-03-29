@@ -19,7 +19,8 @@
     "test:watch": "nwb test-react --server",
     "deploy": "npm run build && gh-pages -d demo/dist",
     "contributors:add": "all-contributors add",
-    "contributors:generate": "all-contributors generate"
+    "contributors:generate": "all-contributors generate",
+    "prepublish": "npm run build"
   },
   "dependencies": {
     "catenary-curve": "^1.0.1",
