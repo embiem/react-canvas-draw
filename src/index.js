@@ -38,6 +38,11 @@ const canvasTypes = [
   }
 ];
 
+const dimensionsPropTypes = PropTypes.oneOfType([
+  PropTypes.number,
+  PropTypes.string
+]);
+
 export default class extends PureComponent {
   static propTypes = {
     loadTimeOffset: PropTypes.number,
@@ -47,8 +52,8 @@ export default class extends PureComponent {
     catenaryColor: PropTypes.string,
     gridColor: PropTypes.string,
     hideGrid: PropTypes.bool,
-    canvasWidth: PropTypes.number,
-    canvasHeight: PropTypes.number,
+    canvasWidth: dimensionsPropTypes,
+    canvasHeight: dimensionsPropTypes,
     disabled: PropTypes.bool,
     imgSrc: PropTypes.string,
     saveData: PropTypes.string,
