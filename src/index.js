@@ -444,7 +444,7 @@ export default class extends PureComponent {
       const pointer = this.lazy.getPointerCoordinates();
       const brush = this.lazy.getBrushCoordinates();
 
-      this.drawInterface(this.ctx.interface, pointer, brush);
+      // this.drawInterface(this.ctx.interface, pointer, brush);
       this.mouseHasMoved = false;
       this.valuesChanged = false;
     }
