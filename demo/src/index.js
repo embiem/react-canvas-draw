@@ -38,7 +38,9 @@ class Demo extends Component {
           default values.
         </p>
         <p>Try it out! Draw on this white canvas:</p>
-        <CanvasDraw />
+        <CanvasDraw
+          onChange={() => console.log('onChange') }
+        />
         <h2>Custom Brush-Color</h2>
         <p>
           Let's spice things up by using custom brush colors{" "}
