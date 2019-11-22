@@ -27,7 +27,7 @@ class Demo extends Component {
         <iframe
           title="GitHub link"
           src="https://ghbtns.com/github-btn.html?user=embiem&repo=react-canvas-draw&type=star&count=true"
-          frameborder="0"
+          frameBorder="0"
           scrolling="0"
           width="160px"
           height="30px"
