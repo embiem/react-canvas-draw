@@ -57,7 +57,8 @@ These are the defaultProps of CanvasDraw. You can pass along any of these props 
     disabled: false,
     imgSrc: "",
     saveData: null,
-    immediateLoading: false
+    immediateLoading: false,
+    hideInterface: false
   };
 ```
 

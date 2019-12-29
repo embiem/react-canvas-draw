@@ -59,7 +59,8 @@ export default class extends PureComponent {
     disabled: PropTypes.bool,
     imgSrc: PropTypes.string,
     saveData: PropTypes.string,
-    immediateLoading: PropTypes.bool
+    immediateLoading: PropTypes.bool,
+    hideInterface: PropTypes.bool
   };
 
   static defaultProps = {
@@ -77,7 +78,8 @@ export default class extends PureComponent {
     disabled: false,
     imgSrc: "",
     saveData: "",
-    immediateLoading: false
+    immediateLoading: false,
+    hideInterface: false
   };
 
   constructor(props) {
@@ -175,7 +177,7 @@ export default class extends PureComponent {
     const lines = this.lines.slice(0, -1);
     this.clear();
     this.simulateDrawingLines({ lines, immediate: true });
-    this.triggerOnChange()
+    this.triggerOnChange();
   };
 
   getSaveData = () => {
@@ -440,12 +442,12 @@ export default class extends PureComponent {
     // Clear the temporary line-drawing canvas
     this.ctx.temp.clearRect(0, 0, width, height);
 
-    this.triggerOnChange()
+    this.triggerOnChange();
   };
 
   triggerOnChange = () => {
-    this.props.onChange && this.props.onChange(this)
-  }
+    this.props.onChange && this.props.onChange(this);
+  };
 
   clear = () => {
     this.lines = [];
@@ -469,7 +471,7 @@ export default class extends PureComponent {
       const pointer = this.lazy.getPointerCoordinates();
       const brush = this.lazy.getBrushCoordinates();
 
-      // this.drawInterface(this.ctx.interface, pointer, brush);
+      this.drawInterface(this.ctx.interface, pointer, brush);
       this.mouseHasMoved = false;
       this.valuesChanged = false;
     }
@@ -512,6 +514,8 @@ export default class extends PureComponent {
   };
 
   drawInterface = (ctx, pointer, brush) => {
+    if (this.props.hideInterface) return;
+
     ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
 
     // Draw brush preview
