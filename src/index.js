@@ -45,6 +45,7 @@ const dimensionsPropTypes = PropTypes.oneOfType([
 
 export default class extends PureComponent {
   static propTypes = {
+    onChange: PropTypes.func,
     loadTimeOffset: PropTypes.number,
     lazyRadius: PropTypes.number,
     brushRadius: PropTypes.number,
@@ -62,6 +63,7 @@ export default class extends PureComponent {
   };
 
   static defaultProps = {
+    onChange: null,
     loadTimeOffset: 5,
     lazyRadius: 12,
     brushRadius: 10,
@@ -173,6 +175,7 @@ export default class extends PureComponent {
     const lines = this.lines.slice(0, -1);
     this.clear();
     this.simulateDrawingLines({ lines, immediate: true });
+    this.triggerOnChange()
   };
 
   getSaveData = () => {
@@ -436,7 +439,13 @@ export default class extends PureComponent {
 
     // Clear the temporary line-drawing canvas
     this.ctx.temp.clearRect(0, 0, width, height);
+
+    this.triggerOnChange()
   };
+
+  triggerOnChange = () => {
+    this.props.onChange && this.props.onChange(this)
+  }
 
   clear = () => {
     this.lines = [];
@@ -460,7 +469,7 @@ export default class extends PureComponent {
       const pointer = this.lazy.getPointerCoordinates();
       const brush = this.lazy.getBrushCoordinates();
 
-      this.drawInterface(this.ctx.interface, pointer, brush);
+      // this.drawInterface(this.ctx.interface, pointer, brush);
       this.mouseHasMoved = false;
       this.valuesChanged = false;
     }
