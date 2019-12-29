@@ -234,6 +234,22 @@ export default class extends PureComponent {
     lines.forEach(line => {
       const { points, brushColor, brushRadius } = line;
 
+      // Draw all at once if immediate flag is set, instead of using setTimeout
+      if (immediate) {
+        // Draw the points
+        this.drawPoints({
+          points,
+          brushColor,
+          brushRadius
+        });
+
+        // Save line with the drawn points
+        this.points = points;
+        this.saveLine({ brushColor, brushRadius });
+        return;
+      }
+
+      // Use timeout to draw
       for (let i = 1; i < points.length; i++) {
         curTime += timeoutGap;
         window.setTimeout(() => {
