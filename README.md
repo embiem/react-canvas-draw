@@ -44,6 +44,7 @@ These are the defaultProps of CanvasDraw. You can pass along any of these props 
 
 ```javascript
   static defaultProps = {
+    onChange: null
     loadTimeOffset: 5,
     lazyRadius: 30,
     brushRadius: 12,
