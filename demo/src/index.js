@@ -27,7 +27,7 @@ class Demo extends Component {
         <iframe
           title="GitHub link"
           src="https://ghbtns.com/github-btn.html?user=embiem&repo=react-canvas-draw&type=star&count=true"
-          frameborder="0"
+          frameBorder="0"
           scrolling="0"
           width="160px"
           height="30px"
@@ -38,7 +38,7 @@ class Demo extends Component {
           default values.
         </p>
         <p>Try it out! Draw on this white canvas:</p>
-        <CanvasDraw />
+        <CanvasDraw onChange={() => console.log("onChange")} />
         <h2>Custom Brush-Color</h2>
         <p>
           Let's spice things up by using custom brush colors{" "}
@@ -69,6 +69,9 @@ class Demo extends Component {
           brushColor="rgba(155,12,60,0.3)"
           imgSrc="https://upload.wikimedia.org/wikipedia/commons/a/a1/Nepalese_Mhapuja_Mandala.jpg"
         />
+        <h2>Hide UI</h2>
+        <p>To hide the UI elements, set the `hideInterface` prop. You can also hide the grid with the `hideGrid` prop.</p>
+        <CanvasDraw hideInterface hideGrid />
         <h2>Save & Load</h2>
         <p>
           This part got me most excited. Very easy to use saving and loading of

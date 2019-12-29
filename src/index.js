@@ -45,6 +45,7 @@ const dimensionsPropTypes = PropTypes.oneOfType([
 
 export default class extends PureComponent {
   static propTypes = {
+    onChange: PropTypes.func,
     loadTimeOffset: PropTypes.number,
     lazyRadius: PropTypes.number,
     brushRadius: PropTypes.number,
@@ -58,10 +59,12 @@ export default class extends PureComponent {
     disabled: PropTypes.bool,
     imgSrc: PropTypes.string,
     saveData: PropTypes.string,
-    immediateLoading: PropTypes.bool
+    immediateLoading: PropTypes.bool,
+    hideInterface: PropTypes.bool
   };
 
   static defaultProps = {
+    onChange: null,
     loadTimeOffset: 5,
     lazyRadius: 12,
     brushRadius: 10,
@@ -75,7 +78,8 @@ export default class extends PureComponent {
     disabled: false,
     imgSrc: "",
     saveData: "",
-    immediateLoading: false
+    immediateLoading: false,
+    hideInterface: false
   };
 
   constructor(props) {
@@ -173,6 +177,7 @@ export default class extends PureComponent {
     const lines = this.lines.slice(0, -1);
     this.clear();
     this.simulateDrawingLines({ lines, immediate: true });
+    this.triggerOnChange();
   };
 
   getSaveData = () => {
@@ -234,6 +239,22 @@ export default class extends PureComponent {
     lines.forEach(line => {
       const { points, brushColor, brushRadius } = line;
 
+      // Draw all at once if immediate flag is set, instead of using setTimeout
+      if (immediate) {
+        // Draw the points
+        this.drawPoints({
+          points,
+          brushColor,
+          brushRadius
+        });
+
+        // Save line with the drawn points
+        this.points = points;
+        this.saveLine({ brushColor, brushRadius });
+        return;
+      }
+
+      // Use timeout to draw
       for (let i = 1; i < points.length; i++) {
         curTime += timeoutGap;
         window.setTimeout(() => {
@@ -420,6 +441,12 @@ export default class extends PureComponent {
 
     // Clear the temporary line-drawing canvas
     this.ctx.temp.clearRect(0, 0, width, height);
+
+    this.triggerOnChange();
+  };
+
+  triggerOnChange = () => {
+    this.props.onChange && this.props.onChange(this);
   };
 
   clear = () => {
@@ -487,6 +514,8 @@ export default class extends PureComponent {
   };
 
   drawInterface = (ctx, pointer, brush) => {
+    if (this.props.hideInterface) return;
+
     ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
 
     // Draw brush preview
