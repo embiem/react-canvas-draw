@@ -341,10 +341,10 @@ export default class extends PureComponent {
     const rect = this.canvas.interface.getBoundingClientRect();
 
     // use cursor pos as default
-    var clientX = e.clientX;
-    var clientY = e.clientY;
+    let clientX = e.clientX;
+    let clientY = e.clientY;
 
-    var offset = {
+    const offset = {
         top: rect.top + document.body.scrollTop,
         left: rect.left + document.body.scrollLeft
     };
