@@ -321,6 +321,7 @@ export default class extends PureComponent {
       this.setCanvasSize(this.canvas.grid, width, height);
 
       this.drawGrid(this.ctx.grid);
+      this.drawImage();
       this.loop({ once: true });
     }
     this.loadSaveData(saveData, true);
