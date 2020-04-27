@@ -48,7 +48,7 @@
     "react": "^16.2.0",
     "react-dom": "^16.2.0",
     "style-loader": "^0.19.1",
-    "codecov": "3.5.x",
+    "codecov": "3.6.x",
     "coveralls": "3.0.x"
   },
   "author": {
