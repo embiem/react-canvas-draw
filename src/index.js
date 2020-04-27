@@ -166,11 +166,14 @@ export default class extends PureComponent {
 
     // Load the image
     this.image = new Image();
-    this.image.src = this.props.imgSrc;
+
+    // Prevent SecurityError "Tainted canvases may not be exported." #70
+    this.image.crossOrigin = "anonymous";
 
     // Draw the image once loaded
     this.image.onload = () =>
       drawImage({ ctx: this.ctx.grid, img: this.image });
+    this.image.src = this.props.imgSrc;
   };
 
   undo = () => {
@@ -275,42 +278,39 @@ export default class extends PureComponent {
     });
   };
 
-  handleTouchStart = e => {
-    const { x, y } = this.getPointerPos(e);
-    this.lazy.update({ x, y }, { both: true });
-    this.handleMouseDown(e);
-
-    this.mouseHasMoved = true;
-  };
-
-  handleTouchMove = e => {
+  handleDrawStart = e => {
     e.preventDefault();
-    const { x, y } = this.getPointerPos(e);
-    this.handlePointerMove(x, y);
-  };
 
-  handleTouchEnd = e => {
-    this.handleMouseUp(e);
-    const brush = this.lazy.getBrushCoordinates();
-    this.lazy.update({ x: brush.x, y: brush.y }, { both: true });
-    this.mouseHasMoved = true;
-  };
-
-  handleMouseDown = e => {
-    e.preventDefault();
+    // Start drawing
     this.isPressing = true;
+
+    const { x, y } = this.getPointerPos(e);
+
+    if (e.touches && e.touches.length > 0) {
+      // on touch, set catenary position to touch pos
+      this.lazy.update({ x, y }, { both: true });
+    }
+
+    // Ensure the initial down position gets added to our line
+    this.handlePointerMove(x, y);
   };
 
-  handleMouseMove = e => {
+  handleDrawMove = e => {
+    e.preventDefault();
+
     const { x, y } = this.getPointerPos(e);
     this.handlePointerMove(x, y);
   };
 
-  handleMouseUp = e => {
+  handleDrawEnd = e => {
     e.preventDefault();
+
+    // Draw to this end pos
+    this.handleDrawMove(e);
+
+    // Stop drawing & save the drawn line
     this.isDrawing = false;
     this.isPressing = false;
-
     this.saveLine();
   };
 
@@ -324,6 +324,7 @@ export default class extends PureComponent {
       this.setCanvasSize(this.canvas.grid, width, height);
 
       this.drawGrid(this.ctx.grid);
+      this.drawImage();
       this.loop({ once: true });
     }
     this.loadSaveData(saveData, true);
@@ -359,11 +360,11 @@ export default class extends PureComponent {
   handlePointerMove = (x, y) => {
     if (this.props.disabled) return;
 
-    const hasChanged = this.lazy.update({ x, y });
+    this.lazy.update({ x, y });
     const isDisabled = !this.lazy.isEnabled();
 
     if (
-      (this.isPressing && hasChanged && !this.isDrawing) ||
+      (this.isPressing && !this.isDrawing) ||
       (isDisabled && this.isPressing)
     ) {
       // Start drawing and add point
@@ -371,7 +372,7 @@ export default class extends PureComponent {
       this.points.push(this.lazy.brush.toObject());
     }
 
-    if (this.isDrawing && (this.lazy.brushHasMoved() || isDisabled)) {
+    if (this.isDrawing) {
       // Add new point
       this.points.push(this.lazy.brush.toObject());
 
@@ -583,14 +584,14 @@ export default class extends PureComponent {
                 }
               }}
               style={{ ...canvasStyle, zIndex }}
-              onMouseDown={isInterface ? this.handleMouseDown : undefined}
-              onMouseMove={isInterface ? this.handleMouseMove : undefined}
-              onMouseUp={isInterface ? this.handleMouseUp : undefined}
-              onMouseOut={isInterface ? this.handleMouseUp : undefined}
-              onTouchStart={isInterface ? this.handleTouchStart : undefined}
-              onTouchMove={isInterface ? this.handleTouchMove : undefined}
-              onTouchEnd={isInterface ? this.handleTouchEnd : undefined}
-              onTouchCancel={isInterface ? this.handleTouchEnd : undefined}
+              onMouseDown={isInterface ? this.handleDrawStart : undefined}
+              onMouseMove={isInterface ? this.handleDrawMove : undefined}
+              onMouseUp={isInterface ? this.handleDrawEnd : undefined}
+              onMouseOut={isInterface ? this.handleDrawEnd : undefined}
+              onTouchStart={isInterface ? this.handleDrawStart : undefined}
+              onTouchMove={isInterface ? this.handleDrawMove : undefined}
+              onTouchEnd={isInterface ? this.handleDrawEnd : undefined}
+              onTouchCancel={isInterface ? this.handleDrawEnd : undefined}
             />
           );
         })}
