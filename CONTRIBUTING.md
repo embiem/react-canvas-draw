@@ -1,3 +1,12 @@
+# Contributing
+
+Thanks for considering to contribute to React Canvas Draw!
+
+Please use the `develop` branch when creating PRs. Below are the necessary steps to get going.
+
+If you want to be added to the contributors list in the README, 
+please follow the [all-contributors bot instructions](https://allcontributors.org/docs/en/bot/usage).
+
 ## Prerequisites
 
 [Node.js](http://nodejs.org/) >= v4 must be installed.
