@@ -167,6 +167,9 @@ export default class extends PureComponent {
     // Load the image
     this.image = new Image();
 
+    // Prevent SecurityError "Tainted canvases may not be exported." #70
+    this.image.crossOrigin = "anonymous";
+
     // Draw the image once loaded
     this.image.onload = () =>
       drawImage({ ctx: this.ctx.grid, img: this.image });
