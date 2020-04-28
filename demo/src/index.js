@@ -26,7 +26,7 @@ class Demo extends Component {
       });
     }, 2000);
 
-    // let's change the background image every 15 seconds. fun!
+    // let's change the background image every 2 seconds. fun!
     window.setInterval(() => {
       if (
         this.state.imgs &&
@@ -99,11 +99,9 @@ class Demo extends Component {
         />
 
         <h2>Refreshable Background Image</h2>
-        <p>You can also set the `refreshBackgroundImage` prop to true is you want to enable background refreshable.</p>
         <p>This will refresh the background in every two seconds.</p>
         <CanvasDraw
           brushColor="rgba(155,12,60,0.3)"
-          refreshBackgroundImage={true}
           imgSrc={this.state.backgroundImg}
         />
         <h2>Hide UI</h2>

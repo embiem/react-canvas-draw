@@ -58,8 +58,7 @@ These are the defaultProps of CanvasDraw. You can pass along any of these props 
     imgSrc: "",
     saveData: null,
     immediateLoading: false,
-    hideInterface: false,
-    refreshBackgroundImage: false,
+    hideInterface: false
   };
 ```
 
