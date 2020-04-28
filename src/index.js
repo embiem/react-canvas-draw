@@ -60,7 +60,8 @@ export default class extends PureComponent {
     imgSrc: PropTypes.string,
     saveData: PropTypes.string,
     immediateLoading: PropTypes.bool,
-    hideInterface: PropTypes.bool
+    hideInterface: PropTypes.bool,
+    refreshBackgroundImage: PropTypes.bool,
   };
 
   static defaultProps = {
@@ -79,7 +80,8 @@ export default class extends PureComponent {
     imgSrc: "",
     saveData: "",
     immediateLoading: false,
-    hideInterface: false
+    hideInterface: false,
+    refreshBackgroundImage: false
   };
 
   constructor(props) {
@@ -155,6 +157,12 @@ export default class extends PureComponent {
       // Signal this.loop function that values changed
       this.valuesChanged = true;
     }
+
+    // Refresh the Background Canvas if refreshBackgroundImage is true
+    if (this.props.refreshBackgroundImage) {
+        this.drawImage();
+    }
+
   }
 
   componentWillUnmount = () => {
@@ -166,11 +174,11 @@ export default class extends PureComponent {
 
     // Load the image
     this.image = new Image();
+    this.image.src = this.props.imgSrc;
 
     // Draw the image once loaded
     this.image.onload = () =>
       drawImage({ ctx: this.ctx.grid, img: this.image });
-    this.image.src = this.props.imgSrc;
   };
 
   undo = () => {
@@ -321,7 +329,6 @@ export default class extends PureComponent {
       this.setCanvasSize(this.canvas.grid, width, height);
 
       this.drawGrid(this.ctx.grid);
-      this.drawImage();
       this.loop({ once: true });
     }
     this.loadSaveData(saveData, true);
