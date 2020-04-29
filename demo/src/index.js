@@ -86,8 +86,9 @@ class Demo extends Component {
             onClick={() => {
               localStorage.setItem(
                 "savedDrawing",
-                this.saveableCanvas.getSaveData()
+                this.saveableCanvas.exportImageToFile("jpeg",false,"#ffffff")
               );
+              console.log(localStorage.getItem("savedDrawing"));
             }}
           >
             Save
