@@ -212,7 +212,7 @@ export default class extends PureComponent {
     let width = canvasToExport.width;
     let height = canvasToExport.height;
 
-    //get the current ImageData for the canvas.
+    //get the current ImageData for the canvas
     let storedImageData = context.getImageData(0, 0, width, height);
 
     //store the current globalCompositeOperation
