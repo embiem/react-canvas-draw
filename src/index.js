@@ -19,24 +19,7 @@ const canvasStyle = {
   position: "absolute"
 };
 
-const canvasTypes = [
-  {
-    name: "interface",
-    zIndex: 15
-  },
-  {
-    name: "drawing",
-    zIndex: 11
-  },
-  {
-    name: "temp",
-    zIndex: 12
-  },
-  {
-    name: "grid",
-    zIndex: 10
-  }
-];
+const canvasTypes = ["grid", "drawing", "temp", "interface"];
 
 const dimensionsPropTypes = PropTypes.oneOfType([
   PropTypes.number,
@@ -572,7 +555,7 @@ export default class extends PureComponent {
           }
         }}
       >
-        {canvasTypes.map(({ name, zIndex }) => {
+        {canvasTypes.map((name) => {
           const isInterface = name === "interface";
           return (
             <canvas
@@ -583,7 +566,7 @@ export default class extends PureComponent {
                   this.ctx[name] = canvas.getContext("2d");
                 }
               }}
-              style={{ ...canvasStyle, zIndex }}
+              style={canvasStyle}
               onMouseDown={isInterface ? this.handleDrawStart : undefined}
               onMouseMove={isInterface ? this.handleDrawMove : undefined}
               onMouseUp={isInterface ? this.handleDrawEnd : undefined}
