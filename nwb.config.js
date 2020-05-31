@@ -12,8 +12,9 @@ module.exports = {
   webpack: {
     rules: {
       css: {
-        modules: true,
-        localIdentName: '[local]__[hash:base64:5]'
+        modules: {
+          localIdentName: '[local]__[hash:base64:5]',
+        }
       }
     }
   }
