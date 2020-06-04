@@ -1,4 +1,4 @@
-const TOUCH_SLOP = 5;
+const TOUCH_SLOP = 10;
 const PINCH_TIMEOUT_MS = 250;
 const SUPPRESS_SCROLL = (e) => {
   // No zooming while drawing, but we'll cancel the scroll event.
@@ -144,7 +144,7 @@ export class WaitForPinchState {
 
     // If we already have two touch events, we can move straight into pinch/pan
     if (enablePanAndZoom && e.touches && e.touches.length >= 2) {
-      return (new PinchAndPanState()).handleDrawStart(e, canvasDraw);
+      return (new ScaleOrPanState()).handleDrawStart(e, canvasDraw);
     }
 
     return this.handleDrawMove(e, canvasDraw);
@@ -157,7 +157,7 @@ export class WaitForPinchState {
     // whether zoom is enabled because that happend in draw start).
     if (e.touches && e.touches.length >= 2) {
       // Use the start draw to handler to transition.
-      return (new PinchAndPanState()).handleDrawStart(e, canvasDraw);
+      return (new ScaleOrPanState()).handleDrawStart(e, canvasDraw);
     }
 
     const clientPt = clientPointFromEvent(e);
@@ -207,10 +207,10 @@ export class WaitForPinchState {
 }
 
 /**
- * This state is active when the user is using two touches to change the zoom
- * and pan the drawing.
+ * This state is active when the user has added at least two touch points but we
+ * don't yet know if they intend to pan or zoom.
  */
-export class PinchAndPanState {
+export class ScaleOrPanState {
   handleMouseWheel = SUPPRESS_SCROLL.bind(this);
 
   handleDrawStart = (e, canvasDraw) => {
@@ -230,23 +230,23 @@ export class PinchAndPanState {
       return new DefaultState();
     }
 
-    const { centroid, distance } = this.getTouchMetrics(e);
+    const { centroid, distance } = this.recentMetrics = this.getTouchMetrics(e);
 
-    // Pan first
-    const dx = centroid.clientX - this.start.centroid.clientX;
-    const dy = centroid.clientY - this.start.centroid.clientY;
-    if (Math.abs(dx) + Math.abs(dy) >= TOUCH_SLOP) {
-      canvasDraw.coordSystem.setView({ x: this.panStart.x + dx, y: this.panStart.y + dy });
-    }
-
-    // Now scale
+    // Switch to scaling?
     const dd = Math.abs(distance - this.start.distance);
     if (dd >= TOUCH_SLOP) {
-      const targetScale = this.scaleStart * (distance / this.start.distance);
-      const dScale = targetScale - canvasDraw.coordSystem.scale;
-      canvasDraw.coordSystem.scaleAtClientPoint(dScale, centroid);
+      return new TouchScaleState(this).handleDrawMove(e, canvasDraw);
     }
 
+    // Switch to panning?
+    const dx = centroid.clientX - this.start.centroid.clientX;
+    const dy = centroid.clientY - this.start.centroid.clientY;
+    const dc = Math.abs(dx) + Math.abs(dy);
+    if (dc >= TOUCH_SLOP) {
+      return new TouchPanState(this).handleDrawMove(e, canvasDraw);
+    }
+
+    // Not enough movement yet
     return this;
   };
 
@@ -266,6 +266,67 @@ export class PinchAndPanState {
       centroid: { clientX: (t1x + t2x) / 2.0, clientY: (t1y + t2y) / 2.0 },
     };
   };
+}
+
+/**
+ * The user is actively using touch gestures to pan the image.
+ */
+export class TouchPanState {
+  constructor(scaleOrPanState) {
+    this.scaleOrPanState = scaleOrPanState;
+  }
+
+  handleMouseWheel = SUPPRESS_SCROLL.bind(this);
+  handleDrawStart = () => this;
+
+  handleDrawMove = (e, canvasDraw) => {
+    e.preventDefault();
+    if (!e.touches || e.touches.length < 2) {
+      return new DefaultState();
+    }
+
+    const ref = this.scaleOrPanState;
+    const { centroid, distance } = ref.recentMetrics = ref.getTouchMetrics(e);
+
+    const dx = centroid.clientX - ref.start.centroid.clientX;
+    const dy = centroid.clientY - ref.start.centroid.clientY;
+
+    canvasDraw.setView({ x: ref.panStart.x + dx, y: ref.panStart.y + dy });
+
+    return this;
+  };
+
+  handleDrawEnd = () => new DefaultState();
+}
+
+/**
+ * The user is actively using touch gestures to scale the drawing.
+ */
+export class TouchScaleState {
+  constructor(scaleOrPanState) {
+    this.scaleOrPanState = scaleOrPanState;
+  }
+
+  handleMouseWheel = SUPPRESS_SCROLL.bind(this);
+  handleDrawStart = () => this;
+
+  handleDrawMove = (e, canvasDraw) => {
+    e.preventDefault();
+    if (!e.touches || e.touches.length < 2) {
+      return new DefaultState();
+    }
+
+    const ref = this.scaleOrPanState;
+    const { centroid, distance } = ref.recentMetrics = ref.getTouchMetrics(e);
+
+    const targetScale = ref.scaleStart * (distance / ref.start.distance);
+    const dScale = targetScale - canvasDraw.coordSystem.scale;
+    canvasDraw.coordSystem.scaleAtClientPoint(dScale, centroid);
+
+    return this;
+  };
+
+  handleDrawEnd = () => new DefaultState();
 }
 
 /**
