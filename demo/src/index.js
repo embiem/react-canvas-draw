@@ -106,6 +106,13 @@ class Demo extends Component {
           >
             Undo
           </button>
+          <button
+            onClick={() => {
+              console.log(this.saveableCanvas.getDataURL());
+            }}
+          >
+            GetDataURL
+          </button>
           <div>
             <label>Width:</label>
             <input
