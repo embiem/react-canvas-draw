@@ -58,7 +58,12 @@ These are the defaultProps of CanvasDraw. You can pass along any of these props 
     imgSrc: "",
     saveData: null,
     immediateLoading: false,
-    hideInterface: false
+    hideInterface: false,
+    gridSizeX: 25,
+    gridSizeY: 25,
+    gridLineWidth: 0.5,
+    hideGridX: false,
+    hideGridY: false
   };
 ```
 
@@ -94,7 +99,7 @@ Thanks goes to these wonderful people ([emoji key](https://github.com/kentcdodds
 <!-- ALL-CONTRIBUTORS-LIST:START - Do not remove or modify this section -->
 <!-- prettier-ignore -->
 | [<img src="https://avatars3.githubusercontent.com/u/3866457?v=4" width="100px;"/><br /><sub><b>Martin Beierling-Mutz</b></sub>](https://embiem.me)<br />[💻](https://github.com/embiem/react-canvas-draw/commits?author=embiem "Code") [📖](https://github.com/embiem/react-canvas-draw/commits?author=embiem "Documentation") [💡](#example-embiem "Examples") [🤔](#ideas-embiem "Ideas, Planning, & Feedback") | [<img src="https://avatars0.githubusercontent.com/u/4155003?v=4" width="100px;"/><br /><sub><b>Jan Hug</b></sub>](http://www.janhug.info)<br />[🤔](#ideas-dulnan "Ideas, Planning, & Feedback") |
-| :---: | :---: |
+| :-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------: | :---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------: |
 
 <!-- ALL-CONTRIBUTORS-LIST:END -->
 
