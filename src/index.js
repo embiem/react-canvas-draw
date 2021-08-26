@@ -10,37 +10,37 @@ import drawImage from "./drawImage";
 function midPointBtw(p1, p2) {
   return {
     x: p1.x + (p2.x - p1.x) / 2,
-    y: p1.y + (p2.y - p1.y) / 2,
+    y: p1.y + (p2.y - p1.y) / 2
   };
 }
 
 const canvasStyle = {
   display: "block",
-  position: "absolute",
+  position: "absolute"
 };
 
 const canvasTypes = [
   {
     name: "interface",
-    zIndex: 15,
+    zIndex: 15
   },
   {
     name: "drawing",
-    zIndex: 11,
+    zIndex: 11
   },
   {
     name: "temp",
-    zIndex: 12,
+    zIndex: 12
   },
   {
     name: "grid",
-    zIndex: 10,
-  },
+    zIndex: 10
+  }
 ];
 
 const dimensionsPropTypes = PropTypes.oneOfType([
   PropTypes.number,
-  PropTypes.string,
+  PropTypes.string
 ]);
 
 export default class extends PureComponent {
@@ -60,7 +60,7 @@ export default class extends PureComponent {
     imgSrc: PropTypes.string,
     saveData: PropTypes.string,
     immediateLoading: PropTypes.bool,
-    hideInterface: PropTypes.bool,
+    hideInterface: PropTypes.bool
   };
 
   static defaultProps = {
@@ -79,7 +79,7 @@ export default class extends PureComponent {
     imgSrc: "",
     saveData: "",
     immediateLoading: false,
-    hideInterface: false,
+    hideInterface: false
   };
 
   constructor(props) {
@@ -105,8 +105,8 @@ export default class extends PureComponent {
       enabled: true,
       initialPoint: {
         x: window.innerWidth / 2,
-        y: window.innerHeight / 2,
-      },
+        y: window.innerHeight / 2
+      }
     });
     this.chainLength = this.props.lazyRadius * window.devicePixelRatio;
 
@@ -188,7 +188,7 @@ export default class extends PureComponent {
     return JSON.stringify({
       lines: this.lines,
       width: this.props.canvasWidth,
-      height: this.props.canvasHeight,
+      height: this.props.canvasHeight
     });
   };
 
@@ -216,7 +216,7 @@ export default class extends PureComponent {
       this.simulateDrawingLines({
         lines,
         immediate,
-        triggerChange,
+        triggerChange
       });
     } else {
       // we need to rescale the lines based on saved & current dimensions
@@ -229,12 +229,12 @@ export default class extends PureComponent {
           ...line,
           points: line.points.map((p) => ({
             x: p.x * scaleX,
-            y: p.y * scaleY,
+            y: p.y * scaleY
           })),
-          brushRadius: line.brushRadius * scaleAvg,
+          brushRadius: line.brushRadius * scaleAvg
         })),
         immediate,
-        triggerChange,
+        triggerChange
       });
     }
   };
@@ -258,7 +258,7 @@ export default class extends PureComponent {
         this.drawPoints({
           points,
           brushColor,
-          brushRadius,
+          brushRadius
         });
 
         // Save line with the drawn points
@@ -266,7 +266,7 @@ export default class extends PureComponent {
         this.saveLine({
           brushColor,
           brushRadius,
-          triggerChange: false,
+          triggerChange: false
         });
         return;
       }
@@ -278,7 +278,7 @@ export default class extends PureComponent {
           this.drawPoints({
             points: points.slice(0, i + 1),
             brushColor,
-            brushRadius,
+            brushRadius
           });
         }, curTime);
       }
@@ -290,7 +290,7 @@ export default class extends PureComponent {
         this.saveLine({
           brushColor,
           brushRadius,
-          triggerChange: false,
+          triggerChange: false
         });
       }, curTime);
     });
@@ -375,7 +375,7 @@ export default class extends PureComponent {
     // return mouse/touch position inside canvas
     return {
       x: clientX - rect.left,
-      y: clientY - rect.top,
+      y: clientY - rect.top
     };
   };
 
@@ -402,7 +402,7 @@ export default class extends PureComponent {
       this.drawPoints({
         points: this.points,
         brushColor: this.props.brushColor,
-        brushRadius: this.props.brushRadius,
+        brushRadius: this.props.brushRadius
       });
     }
 
@@ -450,7 +450,7 @@ export default class extends PureComponent {
     this.lines.push({
       points: [...this.points],
       brushColor: brushColor || this.props.brushColor,
-      brushRadius: brushRadius || this.props.brushRadius,
+      brushRadius: brushRadius || this.props.brushRadius
     });
 
     // Reset points array
@@ -588,7 +588,7 @@ export default class extends PureComponent {
           touchAction: "none",
           width: this.props.canvasWidth,
           height: this.props.canvasHeight,
-          ...this.props.style,
+          ...this.props.style
         }}
         ref={(container) => {
           if (container) {
