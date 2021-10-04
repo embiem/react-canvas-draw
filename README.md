@@ -1,5 +1,5 @@
 <div align="center">
-<h1>React Canvas Draw</h1>
+  <h1>React Canvas Draw</h1>
 </div>
 
 > A simple yet powerful canvas-drawing component for React ([Demo](https://embiem.github.io/react-canvas-draw/))
@@ -10,7 +10,15 @@
 
 [![Watch on GitHub][github-watch-badge]][github-watch] [![Star on GitHub][github-star-badge]][github-star] [![Tweet][twitter-badge]][twitter]
 
-[![Edit 6lv410914w](https://codesandbox.io/static/img/play-codesandbox.svg)](https://codesandbox.io/s/6lv410914w)
+<p align="center">
+  <img src="https://user-images.githubusercontent.com/6365230/135788278-cb3b7715-108a-404e-999f-5e580e0b1e77.gif" />
+</p>
+
+<p align="center">
+  <a href="https://codesandbox.io/s/6lv410914w">
+    <img src="https://codesandbox.io/static/img/play-codesandbox.svg" alt="Edit 6lv410914w" />
+  </a>
+</p>
 
 ## Installation
 
