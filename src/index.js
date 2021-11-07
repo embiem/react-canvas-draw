@@ -60,7 +60,12 @@ export default class extends PureComponent {
     imgSrc: PropTypes.string,
     saveData: PropTypes.string,
     immediateLoading: PropTypes.bool,
-    hideInterface: PropTypes.bool
+    hideInterface: PropTypes.bool,
+    gridSizeX: PropTypes.number,
+    gridSizeY: PropTypes.number,
+    gridLineWidth: PropTypes.number,
+    hideGridX: PropTypes.bool,
+    hideGridY: PropTypes.bool,
   };
 
   static defaultProps = {
@@ -79,7 +84,12 @@ export default class extends PureComponent {
     imgSrc: "",
     saveData: "",
     immediateLoading: false,
-    hideInterface: false
+    hideInterface: false,
+    gridSizeX: 25,
+    gridSizeY: 25,
+    gridLineWidth: 0.5,
+    hideGridX: false,
+    hideGridY: false,
   };
 
   constructor(props) {
@@ -493,25 +503,29 @@ export default class extends PureComponent {
     ctx.setLineDash([5, 1]);
     ctx.setLineDash([]);
     ctx.strokeStyle = this.props.gridColor;
-    ctx.lineWidth = 0.5;
+    ctx.lineWidth = this.props.gridLineWidth;
 
-    const gridSize = 25;
-
-    let countX = 0;
-    while (countX < ctx.canvas.width) {
-      countX += gridSize;
-      ctx.moveTo(countX, 0);
-      ctx.lineTo(countX, ctx.canvas.height);
+    if (!this.props.hideGridX) {
+      let countX = 0;
+      const gridSizeX = this.props.gridSizeX;
+      while (countX < ctx.canvas.width) {
+        countX += gridSizeX;
+        ctx.moveTo(countX, 0);
+        ctx.lineTo(countX, ctx.canvas.height);
+      }
+      ctx.stroke();
     }
-    ctx.stroke();
 
-    let countY = 0;
-    while (countY < ctx.canvas.height) {
-      countY += gridSize;
-      ctx.moveTo(0, countY);
-      ctx.lineTo(ctx.canvas.width, countY);
+    if (!this.props.hideGridY) {
+      let countY = 0;
+      const gridSizeY = this.props.gridSizeY;
+      while (countY < ctx.canvas.height) {
+        countY += gridSizeY;
+        ctx.moveTo(0, countY);
+        ctx.lineTo(ctx.canvas.width, countY);
+      }
+      ctx.stroke();
     }
-    ctx.stroke();
   };
 
   drawInterface = (ctx, pointer, brush) => {

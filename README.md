@@ -58,7 +58,12 @@ These are the defaultProps of CanvasDraw. You can pass along any of these props 
     imgSrc: "",
     saveData: null,
     immediateLoading: false,
-    hideInterface: false
+    hideInterface: false,
+    gridSizeX: 25,
+    gridSizeY: 25,
+    gridLineWidth: 0.5,
+    hideGridX: false,
+    hideGridY: false
   };
 ```
 
