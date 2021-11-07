@@ -22,24 +22,7 @@ const canvasStyle = {
   position: "absolute"
 };
 
-const canvasTypes = [
-  {
-    name: "interface",
-    zIndex: 15
-  },
-  {
-    name: "drawing",
-    zIndex: 11
-  },
-  {
-    name: "temp",
-    zIndex: 12
-  },
-  {
-    name: "grid",
-    zIndex: 10
-  }
-];
+const canvasTypes = ["grid", "drawing", "temp", "interface"];
 
 const dimensionsPropTypes = PropTypes.oneOfType([
   PropTypes.number,
