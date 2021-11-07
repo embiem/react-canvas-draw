@@ -352,6 +352,10 @@ export default class extends PureComponent {
     canvas.style.height = height;
   };
 
+  isTouchEvent = e => {
+    return e.type.indexOf('touch') !== -1;
+  }
+
   getPointerPos = e => {
     const rect = this.canvas.interface.getBoundingClientRect();
 
@@ -359,16 +363,27 @@ export default class extends PureComponent {
     let clientX = e.clientX;
     let clientY = e.clientY;
 
-    // use first touch if available
+    const offset = {
+        top: rect.top + document.body.scrollTop,
+        left: rect.left + document.body.scrollLeft
+    };
+          // use first touch if available
     if (e.changedTouches && e.changedTouches.length > 0) {
       clientX = e.changedTouches[0].clientX;
       clientY = e.changedTouches[0].clientY;
     }
+    if (this.isTouchEvent(e)) {
+        clientX = clientX - offset.left;
+        clientY = clientY - offset.top;
+    } else {
+        clientX = clientX - rect.left;
+        clientY = clientY - rect.top;
+    }
 
     // return mouse/touch position inside canvas
     return {
-      x: clientX - rect.left,
-      y: clientY - rect.top
+      x: clientX ,
+      y: clientY
     };
   };
 
