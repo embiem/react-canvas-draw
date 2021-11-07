@@ -1,16 +1,10 @@
 import expect from "expect";
-import Enzyme from "enzyme";
-import Adapter from "enzyme-adapter-react-16";
 import React from "react";
 import { render, unmountComponentAtNode } from "react-dom";
 
 import CanvasDraw from "src/";
 
-describe("CanvasDraw", () => {
-  before(() => {
-    Enzyme.configure({ adapter: new Adapter() });
-  });
-
+describe("DrawCanvas", () => {
   let node;
 
   beforeEach(() => {
