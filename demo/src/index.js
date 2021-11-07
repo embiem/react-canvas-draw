@@ -122,6 +122,7 @@ class Demo extends Component {
           <button
             onClick={() => {
               console.log(this.saveableCanvas.getDataURL());
+              alert("DataURL written to console")
             }}
           >
             GetDataURL
