@@ -202,6 +202,11 @@ export default class extends PureComponent {
     });
   };
 
+  getDataURL = () => {
+    //generates the image data url (JPG format) from the HTML5 canvas element
+    return this.canvas.drawing.toDataURL();
+  }
+
   loadSaveData = (saveData, immediate = this.props.immediateLoading) => {
     if (typeof saveData !== "string") {
       throw new Error("saveData needs to be of type string!");
