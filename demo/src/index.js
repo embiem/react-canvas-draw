@@ -72,6 +72,19 @@ class Demo extends Component {
         <h2>Hide UI</h2>
         <p>To hide the UI elements, set the `hideInterface` prop. You can also hide the grid with the `hideGrid` prop.</p>
         <CanvasDraw hideInterface hideGrid />
+        <h2>Zoom & Pan</h2>
+        <p>
+          Set the <span>enablePanAndZoom</span> prop to enable mouse scrolling
+          and panning (using Ctrl), pinch zooming, and two-finger panning. If
+          you want to ensure that all lines stay within the bounds of the
+          canvas, set the <span>clampLinesToDocument</span> property.
+        </p>
+        <CanvasDraw
+          enablePanAndZoom
+          clampLinesToDocument
+          gridColor="#ccc"
+          imgSrc="https://upload.wikimedia.org/wikipedia/commons/a/a1/Nepalese_Mhapuja_Mandala.jpg"
+        />
         <h2>Save & Load</h2>
         <p>
           This part got me most excited. Very easy to use saving and loading of
@@ -94,10 +107,10 @@ class Demo extends Component {
           </button>
           <button
             onClick={() => {
-              this.saveableCanvas.clear();
+              this.saveableCanvas.eraseAll();
             }}
           >
-            Clear
+            Erase
           </button>
           <button
             onClick={() => {

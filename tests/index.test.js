@@ -1,12 +1,12 @@
 import expect from "expect";
-import Enzyme, { shallow } from "enzyme";
+import Enzyme from "enzyme";
 import Adapter from "enzyme-adapter-react-16";
 import React from "react";
 import { render, unmountComponentAtNode } from "react-dom";
 
-import DrawCanvas from "src/";
+import CanvasDraw from "src/";
 
-describe("DrawCanvas", () => {
+describe("CanvasDraw", () => {
   before(() => {
     Enzyme.configure({ adapter: new Adapter() });
   });
@@ -22,13 +22,13 @@ describe("DrawCanvas", () => {
   });
 
   it("displays a canvas element", () => {
-    render(<DrawCanvas />, node, () => {
+    render(<CanvasDraw />, node, () => {
       expect(node.innerHTML).toContain("<canvas");
     });
   });
 
   it("changes width and height", () => {
-    const drawCanvas = <DrawCanvas canvasWidth={400} canvasHeight={500} />;
+    const drawCanvas = <CanvasDraw canvasWidth={400} canvasHeight={500} />;
     render(drawCanvas, node, () => {
       expect(node.innerHTML).toContain(`width: 400px`);
       expect(node.innerHTML).toContain(`height: 500px`);
