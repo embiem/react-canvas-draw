@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.2.1] - 2021-11-08
+
+### Fixed
+
+- Pan & Zoom feature now actually works. 1.2.0 introduced the big refactor by markbiddlecom, but also lots of other PRs that were merged, which caused a regression.
+
 ## [1.2.0] - 2021-11-08
 
 ### Added
