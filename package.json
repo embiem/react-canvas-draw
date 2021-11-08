@@ -1,6 +1,6 @@
 {
   "name": "react-canvas-draw",
-  "version": "1.1.1",
+  "version": "1.2.0",
   "description": "A simple yet powerful canvas-drawing component for React.",
   "main": "lib/index.js",
   "module": "es/index.js",
@@ -29,12 +29,14 @@
     "resize-observer-polyfill": "^1.5.0"
   },
   "peerDependencies": {
-    "react": "16.x"
+    "react": "16.x || 17.x"
   },
   "devDependencies": {
-    "all-contributors-cli": "^5.4.1",
+    "all-contributors-cli": "^6.15.0",
     "babel-eslint": "^7.2.3",
-    "css-loader": "^0.28.9",
+    "codecov": "3.6.x",
+    "coveralls": "3.0.x",
+    "css-loader": "^3.5.3",
     "enzyme": "^3.3.0",
     "enzyme-adapter-react-16": "^1.1.1",
     "eslint": "^4.1.1",
@@ -44,12 +46,10 @@
     "eslint-plugin-jsx-a11y": "^5.1.1",
     "eslint-plugin-react": "^7.1.0",
     "gh-pages": "^1.1.0",
-    "nwb": "0.21.x",
+    "nwb": "0.25.x",
     "react": "^16.2.0",
     "react-dom": "^16.2.0",
-    "style-loader": "^0.19.1",
-    "codecov": "3.5.x",
-    "coveralls": "3.0.x"
+    "style-loader": "^0.19.1"
   },
   "author": {
     "name": "Martin Beierling",
