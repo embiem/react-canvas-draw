@@ -10,8 +10,14 @@ class Demo extends Component {
     width: 400,
     height: 400,
     brushRadius: 10,
-    lazyRadius: 12
+    lazyRadius: 12,
+    backgroundImg: "https://upload.wikimedia.org/wikipedia/commons/a/a1/Nepalese_Mhapuja_Mandala.jpg",
+    imgs: [
+      "https://upload.wikimedia.org/wikipedia/commons/a/a1/Nepalese_Mhapuja_Mandala.jpg",
+      "https://i.imgur.com/a0CGGVC.jpg"
+    ]
   };
+
   componentDidMount() {
     // let's change the color randomly every 2 seconds. fun!
     window.setInterval(() => {
@@ -19,6 +25,28 @@ class Demo extends Component {
         color: "#" + Math.floor(Math.random() * 16777215).toString(16)
       });
     }, 2000);
+
+    // let's change the background image every 2 seconds. fun!
+    window.setInterval(() => {
+      if (
+        this.state.imgs &&
+        this.state.imgs.length &&
+        this.state.backgroundImg
+      ) {
+        let img = '';
+        let imgs = this.state.imgs;
+        for (let i = 0; i < imgs.length; i++) {
+          if (this.state.backgroundImg !== imgs[i]) {
+            img = imgs[i];
+          }
+        }
+
+        this.setState({
+          backgroundImg: img,
+        });
+      }
+    }, 2000);
+
   }
   render() {
     return (
@@ -68,6 +96,13 @@ class Demo extends Component {
         <CanvasDraw
           brushColor="rgba(155,12,60,0.3)"
           imgSrc="https://upload.wikimedia.org/wikipedia/commons/a/a1/Nepalese_Mhapuja_Mandala.jpg"
+        />
+
+        <h2>Refreshable Background Image</h2>
+        <p>This will refresh the background in every two seconds.</p>
+        <CanvasDraw
+          brushColor="rgba(155,12,60,0.3)"
+          imgSrc={this.state.backgroundImg}
         />
         <h2>Hide UI</h2>
         <p>To hide the UI elements, set the `hideInterface` prop. You can also hide the grid with the `hideGrid` prop.</p>
