@@ -22,6 +22,7 @@ const canvasStyle = {
   position: "absolute",
 };
 
+// The order of these is important: grid > drawing > temp > interface
 const canvasTypes = ["grid", "drawing", "temp", "interface"];
 
 const dimensionsPropTypes = PropTypes.oneOfType([
@@ -426,7 +427,7 @@ export default class CanvasDraw extends PureComponent {
     }
 
     canvasTypes
-      .map(({ name }) => this.ctx[name])
+      .map((name) => this.ctx[name])
       .forEach((ctx) => {
         this.clearWindow(ctx);
         const m = this.coordSystem.transformMatrix;
@@ -685,23 +686,23 @@ export default class CanvasDraw extends PureComponent {
     ctx.lineWidth = this.props.gridLineWidth;
 
     if (!this.props.hideGridX) {
-      let countX = 0;
+      let countX = minx;
       const gridSizeX = this.props.gridSizeX;
-      while (countX < ctx.canvas.width) {
+      while (countX < maxx) {
         countX += gridSizeX;
-        ctx.moveTo(countX, 0);
-        ctx.lineTo(countX, ctx.canvas.height);
+        ctx.moveTo(countX, miny);
+        ctx.lineTo(countX, maxy);
       }
       ctx.stroke();
     }
 
     if (!this.props.hideGridY) {
-      let countY = 0;
+      let countY = miny;
       const gridSizeY = this.props.gridSizeY;
-      while (countY < ctx.canvas.height) {
+      while (countY < maxy) {
         countY += gridSizeY;
-        ctx.moveTo(0, countY);
-        ctx.lineTo(ctx.canvas.width, countY);
+        ctx.moveTo(minx, countY);
+        ctx.lineTo(maxx, countY);
       }
       ctx.stroke();
     }
