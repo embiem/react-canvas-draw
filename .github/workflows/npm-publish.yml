@@ -11,6 +11,23 @@ on:
       - master
 
 jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout 🛎️
+        uses: actions/checkout@v2
+
+      - name: Install and Build 🔧 
+        run: |
+          npm install
+          npm run build
+
+      - name: Deploy 🚀
+        uses: JamesIves/github-pages-deploy-action@4.1.5
+        with:
+          branch: gh-pages # The branch the action should deploy to.
+          folder: demo/dist # The folder the action should deploy.
+          
   publish-npm:
     runs-on: ubuntu-latest
     steps:
@@ -21,7 +38,6 @@ jobs:
           node-version: "12.x"
           registry-url: "https://registry.npmjs.org"
       - run: npm install
-      - run: npm run deploy # deploys to gh-pages
       - run: npm publish
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
