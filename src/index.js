@@ -197,7 +197,7 @@ export default class CanvasDraw extends PureComponent {
       if (!this.props.imgSrc) return "Background image source not set";
 
       // Write the background image
-      this.drawImage();
+      drawImage();
     } else if (backgroundColour != null) {
       //set background color
       context.fillStyle = backgroundColour;
