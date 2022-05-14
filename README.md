@@ -44,7 +44,7 @@ These are the defaultProps of CanvasDraw. You can pass along any of these props 
 
 ```javascript
   static defaultProps = {
-    onChange: null
+    onChange: null,
     loadTimeOffset: 5,
     lazyRadius: 30,
     brushRadius: 12,
@@ -63,7 +63,7 @@ These are the defaultProps of CanvasDraw. You can pass along any of these props 
     gridSizeY: 25,
     gridLineWidth: 0.5,
     hideGridX: false,
-    hideGridY: false
+    hideGridY: false,
     enablePanAndZoom: false,
     mouseZoomFactor: 0.01,
     zoomExtents: { min: 0.33, max: 3 },
