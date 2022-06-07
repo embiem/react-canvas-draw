@@ -412,6 +412,10 @@ export default class CanvasDraw extends PureComponent {
   };
 
   handleDrawMove = (e) => {
+    // Edge case when the user zoom the page while drawing
+    if (!this.interactionSM) {
+      this.interactionSM = new DefaultState();
+    }
     this.interactionSM = this.interactionSM.handleDrawMove(e, this);
     this.mouseHasMoved = true;
   };
