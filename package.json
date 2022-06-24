@@ -34,7 +34,7 @@
   "devDependencies": {
     "all-contributors-cli": "^6.15.0",
     "babel-eslint": "^7.2.3",
-    "codecov": "3.6.x",
+    "codecov": "3.8.x",
     "coveralls": "3.0.x",
     "css-loader": "^3.5.3",
     "enzyme": "^3.3.0",
